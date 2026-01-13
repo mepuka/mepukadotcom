@@ -216,3 +216,18 @@ Key settings for Effect projects:
 
 - Blog posts: Markdown/MDX in `src/content/blog/` with Content Collections schema validation
 - Mini-apps: Under `/labs/*`, `/projects/*`, or `/apps/*` - can be static or use `/api/*`
+
+## Effect Reference Source
+
+The Effect repository is cloned locally at `~/.local/share/effect-solutions/effect/` for reference when implementing patterns.
+
+**Key directories to explore:**
+- `packages/effect/src/` - Core Effect APIs
+- `packages/platform/src/` - HttpApi, HttpClient, HttpServer
+- `packages/sql-d1/src/` - D1 database integration
+- `packages/*/test/` - Real usage examples
+
+When unsure about Effect syntax or patterns, grep this source rather than guessing. Example:
+```bash
+grep -r "HttpApiBuilder.group" ~/.local/share/effect-solutions/effect/packages/
+```
