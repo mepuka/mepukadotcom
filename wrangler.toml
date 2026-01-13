@@ -2,12 +2,10 @@ name = "mepuka-website"
 pages_build_output_dir = "dist"
 compatibility_date = "2024-12-01"
 
-# D1 Database binding
-[[d1_databases]]
-binding = "DB"
-database_name = "mepuka-db"
-database_id = "placeholder-create-with-wrangler-d1-create"
-
-# For local development, use a local D1 database
+# D1 Database binding (uncomment when ready)
 # Run: wrangler d1 create mepuka-db
-# Then update the database_id above with the returned ID
+# Then add the database_id returned
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "mepuka-db"
+# database_id = "your-database-id-here"
