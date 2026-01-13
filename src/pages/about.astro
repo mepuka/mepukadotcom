@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="About | Mepuka" description="About me">
+  <h1>About</h1>
+
+  <div class="content">
+    <p>
+      I build things on the web. Currently interested in Effect, TypeScript,
+      and building robust systems at the edge.
+    </p>
+
+    <p>
+      This site is built with Astro and Effect, running on Cloudflare Pages.
+    </p>
+  </div>
+</BaseLayout>
+
+<style>
+  h1 {
+    margin-bottom: var(--space-8);
+  }
+
+  .content {
+    max-width: 600px;
+  }
+
+  .content p {
+    margin-bottom: var(--space-6);
+  }
+</style>

@@ -1,0 +1,37 @@
+---
+title: Hello World
+description: First post on the new site built with Astro and Effect
+date: 2026-01-12
+tags: [meta, astro, effect]
+---
+
+This is the first post on my new site. Built with [Astro](https://astro.build) for the frontend and [Effect](https://effect.website) for the backend, running on Cloudflare Pages.
+
+## The Stack
+
+The architecture is straightforward:
+
+- **Astro** handles the static site generation, blog with MDX, and content collections
+- **Effect** powers the backend API running at the edge
+- **Cloudflare D1** provides SQLite-based persistence
+- **Cloudflare Pages** deploys everything from a single GitHub repo
+
+## Why Effect?
+
+Effect brings structured concurrency, typed errors, and dependency injection to TypeScript. It's particularly well-suited for edge computing where you want:
+
+- Clear service boundaries
+- Type-safe error handling
+- Testable, composable code
+
+```typescript
+const processUser = Effect.fn("processUser")(function* (userId: string) {
+  yield* Effect.logInfo(`Processing user ${userId}`)
+  const user = yield* getUser(userId)
+  return yield* processData(user)
+})
+```
+
+## What's Next
+
+I'll be writing about Effect patterns, TypeScript, and building systems. Stay tuned.

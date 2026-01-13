@@ -1,0 +1,106 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+
+const formatDate = (date: Date) => {
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+};
+---
+
+<BaseLayout title={`${post.data.title} | Mepuka`} description={post.data.description}>
+  <article>
+    <header>
+      <time datetime={post.data.date.toISOString()}>
+        {formatDate(post.data.date)}
+      </time>
+      <h1>{post.data.title}</h1>
+      {post.data.description && (
+        <p class="description">{post.data.description}</p>
+      )}
+    </header>
+    <div class="content">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  article {
+    max-width: var(--max-width);
+  }
+
+  header {
+    margin-bottom: var(--space-12);
+  }
+
+  time {
+    display: block;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-2);
+  }
+
+  h1 {
+    margin-bottom: var(--space-3);
+  }
+
+  .description {
+    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+    margin-bottom: 0;
+  }
+
+  .content {
+    font-size: var(--text-base);
+    line-height: 1.7;
+  }
+
+  .content :global(h2) {
+    margin-top: var(--space-12);
+  }
+
+  .content :global(h3) {
+    margin-top: var(--space-8);
+  }
+
+  .content :global(p) {
+    margin-bottom: var(--space-6);
+  }
+
+  .content :global(ul),
+  .content :global(ol) {
+    margin-bottom: var(--space-6);
+  }
+
+  .content :global(pre) {
+    margin: var(--space-8) 0;
+  }
+
+  .content :global(blockquote) {
+    margin: var(--space-8) 0;
+  }
+
+  .content :global(img) {
+    border-radius: 4px;
+    margin: var(--space-8) 0;
+  }
+</style>

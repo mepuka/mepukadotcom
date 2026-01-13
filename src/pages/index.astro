@@ -1,0 +1,114 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 5);
+
+const formatDate = (date: Date) => {
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+  });
+};
+---
+
+<BaseLayout title="Mepuka">
+  <section class="intro">
+    <h1>Hello, I'm Mepuka</h1>
+    <p class="tagline">
+      Building things on the web. Writing about software, systems, and ideas.
+    </p>
+  </section>
+
+  <section class="recent">
+    <h2>Recent Writing</h2>
+    <ul class="post-list stagger">
+      {posts.map((post) => (
+        <li>
+          <a href={`/blog/${post.slug}`}>
+            <span class="post-title">{post.data.title}</span>
+            <span class="post-date">{formatDate(post.data.date)}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    {posts.length === 0 && (
+      <p class="text-muted">No posts yet. Check back soon.</p>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .intro {
+    margin-bottom: var(--space-16);
+  }
+
+  .intro h1 {
+    margin-bottom: var(--space-3);
+  }
+
+  .tagline {
+    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+    max-width: 500px;
+  }
+
+  .recent h2 {
+    font-size: var(--text-lg);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    margin-top: 0;
+    margin-bottom: var(--space-6);
+  }
+
+  .post-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .post-list li {
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .post-list li:last-child {
+    border-bottom: none;
+  }
+
+  .post-list a {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: var(--space-4) 0;
+    color: var(--color-navy);
+  }
+
+  .post-list a::after {
+    display: none;
+  }
+
+  .post-list a:hover {
+    color: var(--color-teal-dark);
+  }
+
+  .post-list a:hover .post-title {
+    color: var(--color-teal-dark);
+  }
+
+  .post-title {
+    font-family: var(--font-heading);
+    font-size: var(--text-lg);
+    transition: color 0.2s ease;
+  }
+
+  .post-date {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+    margin-left: var(--space-4);
+  }
+</style>

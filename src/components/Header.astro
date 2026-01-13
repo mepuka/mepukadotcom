@@ -1,0 +1,85 @@
+---
+const navItems = [
+  { href: '/blog', label: 'Blog' },
+  { href: '/projects', label: 'Projects' },
+  { href: '/about', label: 'About' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header>
+  <nav class="container">
+    <a href="/" class="logo">Mepuka</a>
+    <ul>
+      {navItems.map((item) => (
+        <li>
+          <a
+            href={item.href}
+            class:list={[{ active: currentPath.startsWith(item.href) }]}
+          >
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</header>
+
+<style>
+  header {
+    height: var(--header-height);
+    border-bottom: 1px solid var(--color-border);
+    position: sticky;
+    top: 0;
+    background-color: var(--color-bg);
+    z-index: 100;
+  }
+
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+  }
+
+  .logo {
+    font-family: var(--font-heading);
+    font-size: var(--text-lg);
+    font-weight: 600;
+    color: var(--color-navy);
+  }
+
+  .logo::after {
+    display: none;
+  }
+
+  ul {
+    display: flex;
+    gap: var(--space-6);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li a {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  li a:hover,
+  li a.active {
+    color: var(--color-navy);
+  }
+
+  li a::after {
+    bottom: -4px;
+  }
+
+  li a.active::after {
+    width: 100%;
+    background-color: var(--color-teal);
+  }
+</style>
