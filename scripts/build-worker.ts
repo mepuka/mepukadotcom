@@ -1,8 +1,10 @@
 import { build } from "esbuild"
-import { resolve } from "path"
+import { resolve, dirname } from "path"
+import { fileURLToPath } from "url"
 
-const entryPoint = resolve(import.meta.dir, "../worker/index.ts")
-const outfile = resolve(import.meta.dir, "../dist/_worker.js")
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const entryPoint = resolve(__dirname, "../worker/index.ts")
+const outfile = resolve(__dirname, "../dist/_worker.js")
 
 await build({
   entryPoints: [entryPoint],

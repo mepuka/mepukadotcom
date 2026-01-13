@@ -4,16 +4,14 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && bun run build:worker",
-    "build:worker": "bun run scripts/build-worker.ts",
+    "build": "astro build && npm run build:worker",
+    "build:worker": "npx tsx scripts/build-worker.ts",
     "preview": "wrangler pages dev dist",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "postinstall": "bunx @effect/language-service patch"
+    "test:watch": "vitest"
   },
   "dependencies": {
     "astro": "^5.1.1",
-    "@astrojs/cloudflare": "^12.0.1",
     "@astrojs/mdx": "^4.0.2",
     "effect": "^3.19.14",
     "@effect/platform": "^0.94.1",
@@ -23,10 +21,11 @@
   "devDependencies": {
     "typescript": "^5.7.2",
     "@effect/language-service": "^0.64.1",
-    "vitest": "^3.0.2",
+    "vitest": "^2.1.8",
     "@effect/vitest": "^0.16.1",
     "wrangler": "^3.99.0",
     "esbuild": "^0.24.2",
+    "tsx": "^4.7.0",
     "@cloudflare/workers-types": "^4.20250109.0"
   }
 }
