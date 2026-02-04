@@ -1,0 +1,238 @@
+---
+title: "Building a Bluesky Feed Generator with Effect and Cloudflare"
+description: "Recreating Paper Skygest's academic feed with a lightweight Cloudflare Workers stack—Durable Objects, Queues, D1, and Effect TypeScript, all on the free tier"
+date: 2026-02-02
+tags: [effect, cloudflare, bluesky, typescript]
+---
+
+## Why Build This?
+
+I came across [Paper Skygest](https://arxiv.org/abs/2501.15129), an academic paper recommendation feed for Bluesky, and was curious: could I recreate it using Effect and Cloudflare?
+
+Their paper documents the challenges they hit. **75% of users experienced 6+ second latency** when generating recommendations—fetching user follow lists from the Bluesky API was too slow for real-time requests. Their production architecture required orchestrating five AWS services: EC2 for the firehose listener, Lambda for serving, DynamoDB for storage, more EC2 for offline recommendation generation, and AWS CDK to wire it all together.
+
+I wanted to see how lightweight this could get with Cloudflare's primitives—Durable Objects, Queues, D1, KV—and whether Effect's declarative style would make the code cleaner.
+
+## Two Architectures
+
+### The AWS Approach
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         AWS INFRASTRUCTURE                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌──────────────┐     ┌──────────────┐     ┌──────────────┐    │
+│  │     EC2      │     │   DynamoDB   │     │   Secrets    │    │
+│  │  (Firehose)  │────▶│   (Posts)    │     │   Manager    │    │
+│  │  always-on   │     │              │     │              │    │
+│  └──────────────┘     └──────────────┘     └──────────────┘    │
+│         │                    │                    │            │
+│         │                    │                    │            │
+│         ▼                    ▼                    ▼            │
+│  ┌──────────────┐     ┌──────────────┐     ┌──────────────┐    │
+│  │     EC2      │     │    Lambda    │     │   AWS CDK    │    │
+│  │  (Recs Gen)  │────▶│  (Serving)   │     │  (Deploy)    │    │
+│  │  cron: 20min │     │              │     │              │    │
+│  └──────────────┘     └──────────────┘     └──────────────┘    │
+│                                                                 │
+│  Services to manage: 5+                                         │
+│  Deployment: CloudFormation (5-10 min)                          │
+│  Cost: $15+/month minimum                                       │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### The Cloudflare + Effect Approach
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     CLOUDFLARE WORKERS                           │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  Bluesky Jetstream (WebSocket)                                  │
+│          │                                                      │
+│          ▼                                                      │
+│  ┌──────────────────┐                                           │
+│  │  Durable Object  │  Supervised fiber + SQLite cursor         │
+│  │    (Ingestor)    │                                           │
+│  └────────┬─────────┘                                           │
+│           │ Queue: raw-events                                   │
+│           ▼                                                     │
+│  ┌──────────────────┐                                           │
+│  │  Filter Worker   │  Regex-based paper detection              │
+│  └────────┬─────────┘                                           │
+│           │ D1 (SQLite)                                         │
+│           ▼                                                     │
+│  ┌──────────────────┐                                           │
+│  │ Generator Worker │  Effect request batching                  │
+│  └────────┬─────────┘                                           │
+│           │ KV cache                                            │
+│           ▼                                                     │
+│  ┌──────────────────┐                                           │
+│  │   Feed Worker    │  HTTP endpoints                           │
+│  └──────────────────┘                                           │
+│                                                                 │
+│  Services to manage: 1 (wrangler.toml)                          │
+│  Deployment: wrangler deploy (seconds)                          │
+│  Cost: $0 (free tier)                                           │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Component Mapping
+
+- **Compute:** Lambda + EC2 → Workers
+- **Database:** DynamoDB → D1 (SQLite)
+- **Cache:** ElastiCache → KV
+- **Queue:** SQS → Queues
+- **Stateful process:** EC2 (always-on) → Durable Objects
+- **Secrets:** Secrets Manager → Environment vars
+- **Deployment:** CDK/CloudFormation → `wrangler deploy`
+
+## How It Works
+
+### Durable Objects for the Firehose
+
+Paper Skygest's latency came from synchronous API calls during request handling. The fix: move ingestion to a background process. In AWS, that's an always-on EC2 instance. In Cloudflare, it's a **Durable Object**.
+
+A Durable Object maintains a persistent WebSocket connection to Bluesky's Jetstream. Effect's fiber supervision keeps it alive:
+
+```typescript
+const ensureRunning = Effect.gen(function* () {
+  const current = yield* Ref.get(fiberRef);
+  if (Option.isSome(current)) {
+    const polled = yield* Fiber.poll(current.value);
+    if (Option.isNone(polled)) return Option.none(); // Still running
+  }
+
+  const fiber = yield* Effect.forkDaemon(ingestor);
+  yield* Ref.set(fiberRef, Option.some(fiber));
+  return Option.some(fiber);
+});
+```
+
+An alarm fires every 20 seconds to check the fiber. If it crashed, restart it. No EC2 instance to manage.
+
+### One Config File
+
+Paper Skygest's AWS setup needed CDK to orchestrate five services. Here, everything lives in `wrangler.toml`:
+
+```toml
+# wrangler.toml - that's it
+name = "skygest-feed"
+main = "src/worker/feed.ts"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "skygest"
+
+[[kv_namespaces]]
+binding = "FEED_CACHE"
+
+[[queues.producers]]
+queue = "raw-events"
+binding = "RAW_EVENTS"
+
+[[durable_objects.bindings]]
+name = "JETSTREAM_INGESTOR"
+class_name = "JetstreamIngestorDoV2"
+```
+
+Deploy with `wrangler deploy`. Seconds, not minutes.
+
+### Streaming with Effect
+
+The raw AT Protocol firehose means parsing CBOR-encoded CAR files at hundreds of events per second. Bluesky's [Jetstream](https://github.com/bluesky-social/jetstream) simplifies this to JSON over WebSocket. I built [effect-jetstream](https://github.com/mepuka/effect-jetstream), a small Effect wrapper for the Jetstream API, which turns the connection into a typed stream:
+
+```typescript
+yield* jetstream.stream.pipe(
+  Stream.filterMapEffect(toRawEvent),
+  Stream.groupedWithin(25, Duration.seconds(2)),
+  Stream.mapEffect((batch) => queue.send(batch)),
+  Stream.runDrain
+);
+```
+
+Filter, batch, send to a queue. Backpressure is handled automatically.
+
+## Effect Patterns
+
+A few patterns that made the code cleaner.
+
+### Service Layers
+
+Every dependency is a `Context.Tag` with a `Layer` implementation. Swap D1 for in-memory SQLite in tests:
+
+```typescript
+class PostsRepo extends Context.Tag("@skygest/PostsRepo")<
+  PostsRepo,
+  {
+    readonly putMany: (posts: ReadonlyArray<PaperPost>) => Effect.Effect<void, SqlError>;
+    readonly listRecentByAuthor: (did: string, limit: number) => Effect.Effect<ReadonlyArray<PaperPost>, SqlError>;
+  }
+>() {}
+
+// Production: D1
+const program = myEffect.pipe(Effect.provide(PostsRepoD1.layer));
+
+// Tests: in-memory
+const program = myEffect.pipe(Effect.provide(PostsRepoTest.layer));
+```
+
+### Request Batching
+
+Building a feed means fetching posts from potentially hundreds of followed authors. Effect's `Request` system batches these automatically:
+
+```typescript
+// 100 concurrent requests become 1 database query
+const followPosts = yield* Effect.forEach(
+  follows.dids,
+  (did) => Effect.request(
+    new ListRecentByAuthor({ authorDid: did, limit: 10 }),
+    resolver
+  ),
+  { concurrency: 10, batching: "inherit" }
+);
+```
+
+No manual batching logic. No N+1 queries.
+
+### Typed Errors
+
+Failures are tracked in the type system, not hidden as exceptions:
+
+```typescript
+class AuthError extends Schema.TaggedError<AuthError>()("AuthError", {
+  message: Schema.String
+}) {}
+
+// The compiler tracks what can fail
+const getFollows: Effect<Follows, AuthError | BlueskyApiError, BlueskyClient>
+```
+
+No surprise exceptions. No defensive try-catch scattered through the code.
+
+## The Numbers
+
+After two weeks running:
+
+- **48,434** posts indexed
+- **14,381** unique authors
+- **105,390** URLs processed
+- **~31 MB** database size
+- **$0** monthly cost
+
+The entire stack runs within Cloudflare's free tier. D1, KV, Queues, Durable Objects—all included.
+
+## What I Learned
+
+Cloudflare's edge primitives map surprisingly well to this kind of workload. Durable Objects handle the stateful WebSocket connection that would otherwise need a dedicated EC2 instance. Queues decouple ingestion from processing. D1 is SQLite, which is plenty for a feed generator.
+
+Effect makes the code declarative and composable. Services are swappable layers. Errors are typed. Fibers are supervised. The whole thing reads more like a description of *what* should happen than *how* to make it happen.
+
+Could this handle Paper Skygest's scale? Probably not without some work—their recommendation engine is more sophisticated. But for a straightforward academic paper feed, this is about as simple as it gets.
+
+One wrangler.toml. One deploy command. Zero monthly bill.
+
+---
+
+*Code: [skygest-cloudflare](https://github.com/mepuka/skygest-cloudflare) · [effect-jetstream](https://github.com/mepuka/effect-jetstream)*
