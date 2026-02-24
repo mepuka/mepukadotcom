@@ -1,0 +1,60 @@
+---
+title: "Analyzing Academic Bluesky with Skygent"
+description: "What 48,000 paper-sharing posts reveal about how science spreads on Bluesky — the 6 AM bot spike, arXiv's dominance, and which papers went viral"
+date: 2026-02-05
+tags: [bluesky, data-analysis, effect, skygent]
+---
+
+In a [previous post](/blog/skygest-effect-cloudflare), I described how I recreated [Paper Skygest](https://arxiv.org/abs/2501.15129) — an academic paper recommendation feed for Bluesky — using Effect and Cloudflare Workers. I've had it running for a few weeks now and collected a decent chunk of data. This post looks at what's in it.
+
+I also built [Skygent](https://github.com/mepuka/bsky-cli), a standalone CLI for pulling Bluesky data into local SQLite stores and running queries against them. I used it to grab engagement metrics for the analysis below:
+
+```bash
+skygent query papers --sort by-engagement --limit 100 --format json --fields "@social"
+```
+
+## The data
+
+12 days of posts (January 21 – February 3, 2026). 48,434 posts sharing academic papers from 14,381 accounts, linking to arXiv, bioRxiv, Nature, PubMed, and others.
+
+## Where the papers come from
+
+arXiv dominates — over half of all shared links. The top five sources cover 88% of posts.
+
+<img src="/blog/skygest-analysis/source_distribution.svg" alt="Academic paper sources on Bluesky — arXiv accounts for over half of all shared links" />
+
+Preprints (arXiv + bioRxiv + medRxiv) make up 61% of everything shared. High-profile journals like Nature and Science account for about 5%. Code repos (GitHub, HuggingFace) barely register.
+
+## The 6 AM spike
+
+Every weekday, posting volume spikes at 06:00 UTC — 727 posts on average in that single hour. By 07:00 it drops to 90.
+
+<img src="/blog/skygest-analysis/hourly_spike.svg" alt="Posting volume by hour of day — a spike at 06:00 UTC when arXiv releases new papers" />
+
+That's when arXiv publishes new papers. 123 bot accounts, most tuned to a single arXiv category, pick them up immediately. They all fire at once, then go quiet.
+
+## Bots vs. humans
+
+Of the accounts that interact around paper sharing, about 77% are human, 19% are bots, and the rest are aggregators or institutions. When you look at top-engaged posts, human-shared papers get way more interaction (median 22 vs. 5).
+
+<img src="/blog/skygest-analysis/bot_vs_human.svg" alt="Engagement by author type — among top-engaged posts only" />
+
+Worth noting: this only covers high-engagement posts, so it's comparing the best of both groups, not typical output.
+
+The interaction network has a hub-and-spoke shape — a few accounts broadcast to many passive followers. Science journalism outlets like science.org act as bridges, carrying papers from academic clusters to a wider audience.
+
+## Top papers
+
+Here are the 10 most-engaged papers from the collection period. Health and medicine dominated — and one curator, [@labwaggoner](https://bsky.app/profile/labwaggoner.bsky.social), shows up three times.
+
+<img src="/blog/skygest-analysis/top_papers.svg" alt="Top 10 papers by engagement — stacked by likes, reposts, replies, and quotes" />
+
+<img src="/blog/skygest-analysis/top_papers_table.svg" alt="Top 10 papers — engagement breakdown" />
+
+## AI/ML keywords
+
+About 5% of posts mention AI or ML terms (ai, neural, llm, deep learning, transformer, gpt). General science terms (health, climate, protein) appear in about 4%. Most of the rest is generic academic language.
+
+## Caveats
+
+This is 12 days of data. The top-papers list is drawn from the highest-engagement posts — viral hits, not typical posting. Bot/human labels come from heuristic matching on account names and profiles.

@@ -1,0 +1,45 @@
+flowchart TB
+    subgraph ts["TOKEN SPACE — LLM Context Window"]
+        direction LR
+        sys["System Prompt"]
+        transcript["Transcript<br/>(code + output history)"]
+        obs["Observations"]
+    end
+
+    subgraph engine["RLM ENGINE"]
+        sched["Scheduler<br/>Command Queue"]
+        budget["Budget<br/>Atomic Refs"]
+        model["LLM Provider<br/>(Anthropic · OpenAI)"]
+    end
+
+    subgraph vs["VARIABLE SPACE — Sandbox Heap"]
+        direction LR
+        sandbox["Bun.spawn<br/>Subprocess"]
+        vars["__vars<br/>{records, claims, ...}"]
+    end
+
+    sched -->|"1. Build prompt<br/>from transcript"| ts
+    ts -->|"2. Generate"| model
+    model -->|"3a. Code block"| sandbox
+    sandbox <-->|"read / write"| vars
+    sandbox -->|"4. Output"| sched
+    sched -->|"append to<br/>transcript"| transcript
+
+    sandbox -.->|"3b. llm_query()"| sched
+    sched -.->|"check budget"| budget
+    budget -.->|"sub-call"| model
+    model -.->|"result"| sandbox
+
+    model -->|"3c. SUBMIT tool"| result(["Final Output<br/>771 KB"])
+
+    classDef tsStyle fill:#e8f4f0,stroke:#4a8b7c,color:#1e3a4f
+    classDef vsStyle fill:#f0e8e4,stroke:#8b6a4a,color:#1e3a4f
+    classDef engineStyle fill:#f8f7f4,stroke:#1e3a4f,color:#1e3a4f
+    classDef nodeStyle fill:#fff,stroke:#1e3a4f,color:#1e3a4f,stroke-width:1px
+    classDef resultStyle fill:#4a8b7c,stroke:#1e3a4f,color:#fff
+
+    class ts tsStyle
+    class vs vsStyle
+    class engine engineStyle
+    class sys,transcript,obs,sched,budget,model,sandbox,vars nodeStyle
+    class result resultStyle

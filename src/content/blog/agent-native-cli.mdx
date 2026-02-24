@@ -1,0 +1,51 @@
+---
+title: "Agent-Native CLI: Why your next tool should talk to machines first"
+description: "Applying the principles of agent-native architecture to CLI design—discovery, structured errors, and the 'capabilities' pattern in Skygent."
+date: 2026-02-07
+tags: [skygent, agents, effect, cli]
+---
+
+## The Shift
+
+We've spent decades building CLIs for humans. We focus on colors, progress bars, and "Great job!" messages. But the next billion users of our tools aren't going to be humans—they're going to be agents.
+
+In the [Agent-Native Architecture Guide](https://every.to/guides/agent-native) co-authored by Dan Shipper and Claude, they outline a new paradigm for software. I've been applying these principles to [Skygent](https://github.com/mepuka/skygent-bsky), and it's changed how I think about CLI design.
+
+## 1. Parity: The CLI is the Toolset
+
+The first principle is **Parity**: anything a user can do through the interface, the agent should be able to do through tools. 
+
+For a CLI, this means every flag and subcommand must be accessible and predictable. If a human can pipe output to a file, the agent should be able to do it with a dedicated flag that ensures structured output.
+
+## 2. Granularity and Composability
+
+Instead of one "sync-and-analyze" command, Skygent breaks things down:
+- `sync`: Get the data.
+- `derive`: Filter and transform it.
+- `query`: Look at it.
+
+This **Granularity** allows an agent to compose complex workflows. It can `sync` a timeline, `derive` a store for a specific hashtag, and then `query` that store for engagement—all as separate, verifiable steps.
+
+## 3. Machine-Readable Discovery: The `capabilities` Pattern
+
+In version 0.6.0 of Skygent, I added the `capabilities` command. 
+
+Humans use `--help` to figure out what a tool does. Agents need something different. `skygent capabilities` returns a JSON object describing every available filter, output format, and command. 
+
+Before an agent even runs a query, it can "check its hands" to see what it's capable of.
+
+## 4. Beyond Exit 1: Structured Errors
+
+When a CLI fails for a human, we print a red error message. When it fails for an agent, it needs a **Structured Error Envelope**.
+
+Skygent provides machine-readable error codes and context. If a handle isn't found, the agent doesn't just get a "Not Found" string; it gets a JSON object it can parse to decide whether to retry, correct the handle, or move on.
+
+## Conclusion
+
+Building "Agent-Native" doesn't mean building *against* humans. It means building with a higher standard for structure and predictability. 
+
+If you build for agents, you get a better tool for humans for free.
+
+---
+
+*Check out the progress on [Skygent](https://github.com/mepuka/skygent-bsky).*

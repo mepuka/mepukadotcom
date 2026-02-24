@@ -1,0 +1,230 @@
+---
+title: "Recursive Language Models: Teaching LLMs to Write Code That Calls LLMs"
+description: "How a REPL loop, a sandbox, and 588 LLM calls turned 19 MB of articles into 1,893 structured claims — built with Effect TypeScript and Bun."
+date: 2026-02-11
+tags: [effect, llm, recursive-llm, typescript, bun]
+---
+
+## The Problem with Long Context
+
+You have 19 MB of text — 1,637 articles spanning 17 years of energy policy writing. You want every claim about solar energy extracted, classified by sentiment, and ranked by date. You could paste it all into a 200K-token context window and hope for the best.
+
+It won't work. Models degrade on long contexts. They skip sections, hallucinate structure, and miss the tail end of the input. The failure mode is subtle — you get a confident-looking answer that's missing half the data.
+
+[Recursive Language Models](https://arxiv.org/abs/2502.07413) (Zhang et al., 2025) propose a different approach: don't give the model all the data. Give it a REPL.
+
+> **Paper:** Alex Zhang, Siyuan Huang, Ilia Sucholutsky, Theodore Sumers, Tom Griffiths. *"Recursive Language Models."* arXiv:2502.07413, February 2025. [PDF](https://arxiv.org/pdf/2502.07413) · [Code](https://github.com/alexzhang13/rlm)
+
+## Two Spaces
+
+An RLM separates two memory spaces:
+
+**Variable space** is the REPL heap — an external store where the full dataset lives. It can hold gigabytes. The model never sees it directly.
+
+**Token space** is the model's context window. It contains the system prompt, a running transcript of code and output, and whatever the model chose to pull in from variables.
+
+The model writes code to explore variable space. The code runs in a sandbox. Output flows back into token space. The model reads the output, writes more code, and repeats until it has enough evidence to submit an answer.
+
+<img src="/blog/recursive-language-models/architecture.svg" alt="RLM architecture diagram showing the flow between Token Space, the RLM Engine (Scheduler, Budget, LLM Provider), and Variable Space (Bun.spawn sandbox with __vars heap). Solid arrows show the main REPL loop; dashed arrows show recursive llm_query() bridge calls." style="max-width: 100%; height: auto; margin: 2rem 0;" />
+
+The model never receives 19 MB of text. It receives compact summaries of what its code found. The variable space holds the ground truth; the token space holds the reasoning.
+
+## Recursion
+
+The model can also call other models from inside its code.
+
+When the sandbox runs `llm_query("Classify these claims by sentiment", articleText)`, that call routes back through the system. A sub-model receives the query, processes it in a one-shot call, and returns the result to the sandbox. The parent model's code continues with the response.
+
+So the root model can delegate. It writes a loop: for each batch of 15 articles, call `llm_query_batched()` to extract claims. The sub-model handles the semantic work (reading articles, identifying claims, classifying sentiment). The root model handles the mechanical work (filtering, batching, aggregating, formatting).
+
+Code for counting. LLMs for reading. Each tool applied where it's strongest.
+
+## Building It with Effect
+
+I built this in [Effect TypeScript](https://effect.website) on [Bun](https://bun.sh). Effect handles the hard parts — service wiring, concurrency, typed errors — so the interesting logic stays readable.
+
+The architecture has five core modules:
+
+**Scheduler** — A command-driven event loop. Every state transition flows through a bounded queue: `StartCall → GenerateStep → ExecuteCode → CodeExecuted → GenerateStep → ... → Finalize`. One fiber processes commands. Deterministic ordering, easy to test.
+
+**Sandbox** — A `Bun.spawn` subprocess with JSON IPC. The model's code runs in an isolated process with no filesystem or network access. Built-in functions (`print`, `llm_query`, `budget`) are injected into the sandbox scope. Bridge calls route back through the scheduler for budget enforcement.
+
+**Budget** — Atomic tracking of iterations, LLM calls, and tokens. Every `llm_query()` call — whether from the root model or a recursive sub-call — deducts from the same budget. When it's exhausted, the system attempts a one-shot extraction of whatever partial results exist.
+
+**RlmModel** — Multi-provider LLM integration via `@effect/ai`. Anthropic, OpenAI, and Google models behind a unified interface. A primary model handles the REPL loop; an optional cheaper sub-model handles recursive `llm_query()` calls.
+
+**Trace Writer** — Every event appends to an NDJSON transcript. Variable snapshots capture the heap state after each iteration. You get a replayable record of what happened.
+
+```typescript
+// The core loop, simplified
+const handleGenerateStep = Effect.gen(function* () {
+  const ctx = yield* getCallContext(callId)
+  const prompt = buildReplPrompt(ctx)
+
+  const response = yield* llmCall.generate(prompt, {
+    toolkit: ctx.iteration > 3 ? submitToolkit : undefined
+  })
+
+  if (hasSubmitToolCall(response)) {
+    yield* enqueue(Finalize({ callId, payload: extractPayload(response) }))
+  } else {
+    const code = extractCode(response.text)
+    yield* enqueue(ExecuteCode({ callId, code }))
+  }
+})
+```
+
+Each service is an Effect `Context.Tag` with a `Layer` implementation. Testing swaps the Bun sandbox for an in-memory one, the real model for a fake, the file-based trace writer for a memory buffer. The production wiring and test wiring share the same scheduler logic.
+
+## A Real Run: 1,893 Solar Energy Claims
+
+I pointed the system at 1,637 articles from The Breakthrough Institute and asked it to extract every claim about solar energy.
+
+**The query:** "Find all positive and negative claims about solar energy and rank them by date."
+
+**The model:** Claude Sonnet 4.5
+
+**The budget:** 25 iterations, 1,020 LLM calls
+
+### Iteration 1: Explore
+
+The model's first move was to parse the NDJSON and inspect the schema. It discovered 1,637 records with 12 fields — `url`, `title`, `date`, `body_markdown`, and others. Date range: 2008 to 2025. This took 14 seconds and one LLM call.
+
+### Iteration 2: Filter
+
+Next, it wrote a regex filter across title and body for solar-related terms: `solar`, `photovoltaic`, `pv panel`, `concentrated solar`, `csp`. Result: 561 articles, 34% of the corpus. It then ran a feasibility check — 561 articles at 15 per batch means 38 LLM calls, well within the 1,020 budget.
+
+### Iterations 3–6: Schema Discovery
+
+The model tried to extract claims from the first batch. The initial attempt hit a scope issue — variables don't persist across iterations unless stored in `__vars`. It adapted, restructured the extraction prompt, and got batch 1 working: 39 claims from 15 articles. Each claim had a date, sentiment label, source title, context quote, and URL.
+
+### Iterations 7–8: The Extraction Loop
+
+With the schema proven, the model wrote a loop:
+
+```javascript
+for (let start = 15; start < 561; start += 15) {
+  const batch = solarCandidates.slice(start, start + 15)
+  const results = await llm_query_batched(
+    batch.map(a => `Extract all solar energy claims from this article...`),
+    batch.map(a => a.body_markdown)
+  )
+  // parse JSON, collect claims, log progress
+}
+```
+
+This generated 37 `llm_query_batched` calls — 37 bridge calls from sandbox to scheduler to sub-model and back. Each batch took 10–15 seconds. The full extraction took about 8 minutes.
+
+### Iterations 9–12: Aggregate and Submit
+
+The model flattened 561 extraction objects into a single array of 1,893 claims. It classified sentiments (929 positive, 901 negative, 63 neutral), sorted chronologically, and formatted the output as structured markdown with citations.
+
+It then verified its own work — checked header counts, confirmed date coverage, sampled claims from different periods — before calling `SUBMIT()`.
+
+### The Numbers
+
+| Metric | Value |
+|:---|---:|
+| Wall time | 9 min 49 sec |
+| Iterations used | 12 of 25 |
+| LLM calls | 588 of 1,020 |
+| Total tokens | 1,177,742 |
+| Input size | 19.3 MB (1,637 articles) |
+| Solar articles found | 561 (34%) |
+| Claims extracted | 1,893 |
+| Output size | 771 KB |
+
+The output is a 771 KB markdown document. Every claim includes a date, sentiment, source article, context quote, and URL. I spot-checked 15 claims against the source articles — all 15 traced back to real passages. 10 were verbatim quotes, 5 were accurate paraphrases. All 30 sampled URLs returned HTTP 200.
+
+## The Trace
+
+Every run produces a trace directory:
+
+```
+.rlm/traces/completion-72d49292/
+├── meta.json              # Model, budget, context metadata
+├── transcript.ndjson      # 91 events, timestamped
+├── result.json            # Final 771 KB answer
+└── vars/
+    ├── call-root.depth-0.iter-001.json   # 148 B (empty heap)
+    ├── call-root.depth-0.iter-007.json   # 659 KB (partial extractions)
+    └── call-root.depth-0.iter-012.json   # 2.3 MB (final state)
+```
+
+The transcript is append-only NDJSON. Each line is a timestamped event: `IterationStarted`, `ModelResponse`, `CodeExecutionStarted`, `CodeExecutionCompleted`, `BridgeCallReceived`, `CallFinalized`. Variable snapshots capture the heap after each iteration, with smart truncation — variables are serialized smallest-first, with a 5 MB cap per snapshot. A manifest records every variable name and byte size even when the data is truncated.
+
+The trace makes the system debuggable. When a run produces surprising results, I can step through the transcript and see exactly what code the model wrote, what it saw, and where it changed strategy.
+
+## What the Model Actually Does
+
+Watching the traces, a pattern emerges. The model adapts.
+
+In iteration 3, it tried a JSON response format that didn't parse correctly. By iteration 6, it had switched to requesting plain text with embedded JSON and using regex extraction as a fallback. It checked its budget before committing to full coverage. It normalized inconsistent sentiment labels ("neutral/negative", "neutral_descriptive") in a cleanup pass.
+
+The REPL loop makes this possible. The model tries something, sees what happens, and adjusts. It's not one-shot inference — it's a debugging session.
+
+## Why Effect
+
+Effect isn't incidental to this project. The system manages concurrent LLM calls across recursive depths, tracks shared budget state, supervises sandbox subprocesses, handles bridge call timeouts, and cleans up resources on failure — all while streaming events for observability.
+
+Three patterns carried the most weight:
+
+**Scoped resources.** Each RLM call creates a `Scope`. The sandbox subprocess, bridge call fibers, and pending deferreds all attach to it. When the call completes or fails, the scope closes and everything cleans up. No leaked processes, no orphaned fibers.
+
+**Atomic budget.** `Ref.modify` provides atomic check-and-update for budget state. A recursive `llm_query()` three levels deep shares the same budget ref as the root call. The semaphore limits concurrent model calls to 4. Budget exhaustion is a typed error, not an uncaught exception.
+
+**Layer composition.** The production CLI, the test harness, and the programmatic API all share the same scheduler, the same budget logic, the same sandbox protocol. They differ only in which layers they provide — real model vs. fake, Bun subprocess vs. in-memory, file trace vs. memory buffer.
+
+## Differences from the Reference Implementation
+
+Zhang et al.'s [reference implementation](https://github.com/alexzhang13/rlm) is a Python script. Mine is a production system. The paper proved the concept; I wanted to see how far the architecture could stretch. Here's where they diverge:
+
+**Sandbox isolation.** The reference runs `exec()` in the same Python process. Generated code shares memory with the host. I use `Bun.spawn` to create an isolated subprocess with JSON IPC. The model's code runs in a separate V8 isolate with no filesystem or network access. More overhead, but code can't escape the sandbox.
+
+**Finalization.** The reference parses `FINAL(answer)` from the model's text output with a regex. I use `@effect/ai`'s native tool system — `Tool.make("SUBMIT", ...)` — so the provider handles structured extraction. No fragile text matching. The schema validates output before the system accepts it.
+
+**Output truncation.** This is the most interesting difference. The reference hard-truncates REPL output to 20,000 characters. That truncation is a forcing function — the model *can't* read full results, so it's forced to delegate semantic work to `llm_query()`. My implementation doesn't truncate. Instead, the system prompt guides the model on when to use code vs. `llm_query()`. This is more flexible but model-dependent. Some models follow the guidance; others don't. The reference's approach is blunter but more reliable.
+
+**Concurrency.** The reference is synchronous. Bridge calls block. One `llm_query()` at a time. My implementation uses Effect's `Semaphore` to gate concurrent model calls (default 4) and `Deferred` for async bridge resolution. Multiple `llm_query()` calls can run in parallel, and the scheduler stays responsive during long sub-calls.
+
+**Budget tracking.** The reference uses simple counters. Mine uses `Ref.modify` for atomic check-and-update — race-free even when multiple fibers are consuming budget simultaneously. It also tracks token budgets and wall-clock time, not just iteration and call counts.
+
+**Observability.** The reference logs to stdout. My implementation emits typed `RlmEvent` objects to a `PubSub`, writes NDJSON traces, and captures variable snapshots after every iteration. You can replay a run from its trace without re-executing anything.
+
+| | Reference (Python) | This implementation (Effect TS) |
+|:---|:---|:---|
+| **Sandbox** | `exec()` in-process | `Bun.spawn` subprocess + IPC |
+| **Finalization** | Regex `FINAL(...)` | Native `SUBMIT` tool call |
+| **Output truncation** | Hard 20K char limit | Soft prompt guidance |
+| **Concurrency** | Sequential | Semaphore-gated parallel (4) |
+| **Budget** | Global counters | Atomic refs + token tracking |
+| **Observability** | stdout logs | Typed events + NDJSON traces |
+
+The reference is simpler. That's a feature for a research paper. But for a system you want to run on real data, debug when it breaks, and extend with new providers and tools, the extra structure pays for itself.
+
+## Running It
+
+```bash
+bun run rlm "find all claims about solar energy" \
+  --context-file articles.ndjson \
+  --provider anthropic \
+  --model claude-sonnet-4-5-20250929 \
+  --max-iterations 25 \
+  --max-llm-calls 1020
+```
+
+The CLI supports Anthropic, OpenAI, and Google providers, configurable budgets, prompt caching, NLP tools, media attachments, and custom trace directories. Every run produces a trace by default.
+
+## What's Next
+
+The system works. It processes large datasets, delegates semantic work to sub-models, and produces output you can trace back to source articles. But several extensions are obvious:
+
+- **Parallel batching.** The 37 extraction batches ran sequentially. Parallelizing them could cut the extraction phase from 8 minutes to under 2.
+- **Sandbox hardening.** Process-level isolation works for trusted code. Untrusted execution would need container or microVM sandboxing.
+- **Streaming API.** The event system already streams in real time. A server wrapping it for live progress visualization would be a small addition.
+
+The RLM paper's premise holds up: keep data in variables, reasoning in tokens, and let code bridge the gap. The model writes code, sees what happens, and adjusts. That's the whole trick.
+
+---
+
+*Full output: [1,893 Solar Energy Claims — Appendix](/blog/recursive-language-models-output) · Code: [recursive-llm](https://github.com/mepuka/recursive-llm)*
