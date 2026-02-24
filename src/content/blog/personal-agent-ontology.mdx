@@ -1,0 +1,108 @@
+---
+title: "Mapping the Domain of a Personal AI Agent"
+description: "In the wake of OpenClaw and the proliferation of personal agent implementations, I used formal ontology engineering to map the shared architecture — 115 classes across 9 modules."
+date: 2026-02-23
+tags: [ontology, agents, knowledge-graphs, architecture]
+---
+
+## The Missing Map
+
+OpenClaw, Claude Code, custom builds on LangGraph and CrewAI — personal AI agents are proliferating. Every implementation makes the same design choices — sessions, memory tiers, tool invocations, permission policies — then invents its own vocabulary.
+
+A "session" in one system is a "thread" in another. "Memory" means three different things depending on who you ask. "Tool use" might refer to function calling, MCP connections, or both. The architecture is converging, but the language is not.
+
+I wanted to see what the shared structure looks like. Not the code — the domain. What concepts does every implementation assume? What relationships hold between those concepts? Where do the real architectural boundaries fall?
+
+To answer these questions, I turned to formal ontology engineering — the same methodology used for biomedical knowledge bases, industrial standards, and the semantic web. The result is the [Personal Agent Ontology](https://purl.org/pao/) (PAO): 115 classes, 173 properties, and 75 named individuals organized into 9 modules. The ontology draws from both academic research (cognitive architectures, BDI models, dialog act theory) and real implementations (Claude Code's session model, Letta's tiered memory, MCP's capability discovery).
+
+The full ontology is available as [browsable HTML documentation](/pao/) and as OWL 2 DL in Turtle, JSON-LD, and OWL/XML.
+
+This post walks through what the ontology covers.
+
+## What Is a Personal Agent?
+
+Start with the simplest question: what *is* a personal AI agent? Most implementations treat this as obvious and move on. But even here, formal modeling forces you to make hidden structure explicit.
+
+<img src="/blog/personal-agent-ontology/actor-hierarchy.svg" alt="PAO actor and identity class hierarchy showing Agent, AIAgent, HumanUser, SubAgent, and their relationships to Persona, AgentRole, and Organization" style="max-width: 100%; height: auto; margin: 2rem 0;" />
+
+An `Agent` is the base class. It splits into `AIAgent` and `HumanUser` — not because the distinction is surprising, but because the properties differ. An AI agent has a `Persona` (system prompt, behavioral configuration), belongs to a `ModelDeployment`, and can spawn a `SubAgent`. A human user has none of these.
+
+`SubAgent` is a subclass of `AIAgent`, not a separate type. A `SubAgent` has every property an agent has, plus a delegation relationship to its parent — its own session, memory, and tool access. This matters for systems like Claude Code, where a sub-agent spun up for a background task needs the same architectural scaffolding as the primary agent.
+
+Then there's the identity layer that most implementations leave implicit: `AgentRole` (the same agent can act as researcher, coder, or reviewer), `Organization` (agents belong to tenants), and `Persona` (the behavioral configuration that makes an agent act like "a helpful assistant" or "a senior engineer"). These exist in every production agent system. Architects rarely diagram them.
+
+PAO aligns every top-level class to [BFO 2020](https://basic-formal-ontology.org/) (ISO 21838-2), the same upper ontology used by the OBO Foundry's biomedical ontologies. An `AIAgent` is a Generically Dependent Continuant — an information entity that depends on some physical substrate (a server, a process) for its existence. A `HumanUser` is an Object. The distinction sounds academic until you need to reason about what happens when an agent's deployment moves between servers: the agent persists across servers because it is information, not matter.
+
+## The Conversation Stack
+
+Every agent system models conversation. Most stop at "a list of messages." Modeling conversation formally exposes five distinct layers, each with its own architectural concerns.
+
+<img src="/blog/personal-agent-ontology/conversation-stack.svg" alt="PAO conversation stack from Conversation down through Session, Turn, Message, ContentBlock, with ToolInvocation and ContextWindow branches" style="max-width: 100%; height: auto; margin: 2rem 0;" />
+
+A `Conversation` spans multiple `Sessions`. A session is a bounded period of interaction — open a chat window, that's a session. Close it, come back tomorrow, that's a new session in the same conversation. Each session contains `Turns`, each turn contains a `Message`, and each message breaks down into `ContentBlocks` (text, code, images, tool calls).
+
+This decomposition carries architectural weight. Each layer holds distinct state:
+
+- **Conversation** holds the long-running thread identity and the participants.
+- **Session** tracks status transitions (active, suspended, completed), owns the `ContextWindow`, and records `CompactionEvents` — what happened when the context window filled up and the system had to summarize or discard earlier turns.
+- **Turn** records who spoke and links to any `ToolInvocations` that occurred.
+- **ToolInvocation** connects to a `ToolDefinition`, captures inputs and outputs through a `ToolResult`, and groups related calls into a `ToolInvocationGroup`.
+
+Context overflow is the most interesting piece. In PAO, `ContextWindow` is a first-class entity with token capacity, current usage, and a `CompactionDisposition` — the policy that determines what happens when the window fills. A `CompactionEvent` records that tokens were reclaimed, how many, and what was lost. Most agent architectures treat context overflow as an implementation detail. The ontology treats it as an architectural concern. Memory, tool tracing, and conversation continuity all degrade when context compacts.
+
+The conversation module also includes a pragmatics layer drawn from DIT++ dialog act theory: `DialogAct`, `CommunicativeFunction`, `CommonGround`, and `GroundingAct`. These model *why* an utterance was made (requesting information, confirming understanding, changing topic), not just *what* was said. This layer matters for agents that need to track mutual understanding — did the user actually acknowledge that the agent's plan is correct, or did they just say "ok"?
+
+## Memory Is Not a Database
+
+Agent memory looks deceptively simple from the outside: store things, retrieve things. Formal modeling exposes an architecture closer to cognitive science than to database engineering.
+
+<img src="/blog/personal-agent-ontology/memory-architecture.svg" alt="PAO memory tier architecture showing WorkingMemory, EpisodicMemory, SemanticMemory, and ProceduralMemory with memory operations flowing between them" style="max-width: 100%; height: auto; margin: 2rem 0;" />
+
+PAO models four memory tiers, drawn from the CoALA framework and Letta/MemGPT's implementation:
+
+- **WorkingMemory** — the agent's current context. Volatile, bounded by the context window, directly accessible. This is where the active conversation lives.
+- **EpisodicMemory** — records of specific interactions. An `Episode` captures what happened in a particular session: the turns, the tools used, the outcomes. Episodic memory answers "what did we do last Tuesday?"
+- **SemanticMemory** — general knowledge extracted from episodes. A `Claim` is a proposition the agent holds with some confidence: "the user prefers dark mode," "this API requires authentication." Claims persist across sessions and carry provenance.
+- **ProceduralMemory** — how to do things. Learned patterns, tool usage sequences, workflow templates. The least-modeled tier in current implementations, but architecturally distinct from declarative knowledge.
+
+The operations between tiers matter more than the tiers themselves.
+
+`Encoding` moves information from working memory into episodic or semantic storage. `Retrieval` pulls it back. `Consolidation` transforms episodic memories into semantic knowledge — extracting a general preference from three separate conversations where the user expressed it. `Forgetting` removes items, either by policy (retention periods) or by request (privacy-aware deletion). `Rehearsal` strengthens items that are accessed frequently.
+
+Each operation is a first-class process in the ontology, not an implementation detail. This matters because every operation has provenance. When a `Claim` lives in semantic memory, PAO tracks where it came from through PROV-O derivation chains: which episode, which turn, which message produced the original evidence. If a user asks to delete personal information, the system can follow provenance chains to find every derived memory item — not just the original statement, but every claim that was consolidated from it.
+
+The memory module also handles multi-agent scenarios. A `SharedMemoryArtifact` is a memory item visible to multiple agents, and a `MemoryWriteConflict` records what happens when two agents try to update the same item. These classes exist because production systems already encounter these problems; the ontology makes them explicit.
+
+## The Full Map
+
+The three modules above — identity, conversation, and memory — form the core that every personal agent needs. PAO maps six additional modules covering goals, governance, integration, error recovery, model identity, and scheduling.
+
+<img src="/blog/personal-agent-ontology/module-map.svg" alt="PAO module dependency map showing all 9 modules and their relationships" style="max-width: 100%; height: auto; margin: 2rem 0;" />
+
+**Goals, Plans & Tasks** borrows from the Belief-Desire-Intention model in philosophy of mind. An agent holds `Beliefs` (what it thinks is true), `Desires` (what it wants), and `Intentions` (what it commits to doing). `Goals` decompose into `Plans`, plans contain `Tasks` with dependencies and status. `Deliberation` is a first-class process — the act of choosing which goals to pursue and which plans to adopt. BDI gives agents a vocabulary for *why* they act, not just *what* they do.
+
+**Governance & Safety** treats permissions and policies as structural components. A `PermissionPolicy` governs what tools an agent can use. A `SafetyConstraint` defines non-negotiable behavioral limits. `ConsentRecord` and `RetentionPolicy` handle privacy. `AuditLog` and `AuditEntry` record every authorization decision. The ontology aligns to ODRL (the W3C permissions vocabulary) for policy representation. Governance is architecture; PAO treats it as such.
+
+**External Services & Integration** covers how agents connect to the outside world. An `ExternalService` exposes capabilities — tool capabilities, resource capabilities, prompt capabilities — discovered through `CapabilityDiscoveryEvent`. This module aligns closely with the Model Context Protocol (MCP), modeling the same connection lifecycle: discovery, authentication, invocation, disconnection.
+
+Things go wrong. **Error Recovery & Observability** classifies failures through `ErrorRecoveryEvent` (timeout, authentication, rate limiting) and tracks recovery strategies: `RetryAttempt`, `ReplanEvent`, `RollbackEvent`. `Checkpoint` and `CheckpointDecision` capture the agent's state before risky operations. `OperationalMetric` and `MetricObservation` provide the observability hooks.
+
+**Model Identity** tracks which foundation model, from which provider, through which deployment, produced each conversation turn. `GenerationConfiguration` captures temperature, top-p, max tokens — the parameters that affect output quality.
+
+**Scheduling & Automation** handles recurring and triggered agent tasks. A `Schedule` binds a `RecurrencePattern` to an action. `Triggers` fire on cron expressions, intervals, or external events. `ScheduledExecution` tracks each run's outcome. `ConcurrencyPolicy` determines what happens when a new execution overlaps with one still running.
+
+## Why Formalize?
+
+The ontology is descriptive, not prescriptive. It maps what the domain contains, not how to build an agent.
+
+That matters because the domain is stabilizing. Across OpenClaw, Claude Code, Letta, and a dozen other implementations, the same concepts keep appearing: tiered memory, tool invocation lifecycles, context compaction, permission policies, provenance chains. The vocabulary differs; the architecture converges.
+
+PAO makes the convergence visible. It gives agent builders a shared map — not to constrain design, but to clarify it. When you model your agent's memory system, you can check whether you've accounted for consolidation and forgetting, not just storage and retrieval. When you design governance, you can verify that every tool invocation passes through an authorization decision. When you handle context overflow, you can move beyond treating it as a silent failure and model it as a first-class architectural event.
+
+The ontology contains 115 classes, 138 object properties, 35 data properties, 60 SHACL validation shapes, and 128 competency questions formalized as SPARQL queries. Every class aligns to BFO 2020. Every class has a formal definition. Every competency question has a passing test.
+
+Browse the full documentation at [/pao/](/pao/), or explore the source on [GitHub](https://github.com/mepuka/ontology_skill).
+
+---
+
+*Built with [ROBOT](http://robot.obolibrary.org/), [oaklib](https://incatools.github.io/ontology-access-kit/), and eight custom ontology engineering skills in Claude Code.*
