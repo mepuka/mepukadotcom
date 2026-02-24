@@ -6,98 +6,110 @@ const outDir = join(import.meta.dirname, "../public/blog/personal-agent-ontology
 mkdirSync(outDir, { recursive: true });
 
 const theme = {
-  bg: "var(--color-bg, #1a1b26)",
-  fg: "var(--color-text, #a9b1d6)",
-  accent: "#7aa2f7",
-  muted: "#565f89",
-  surface: "#292e42",
-  border: "#3d59a1",
+  bg: "var(--color-bg, #f8f7f4)",
+  fg: "var(--color-text, #3d4852)",
+  accent: "var(--color-teal, #4a8b7c)",
+  muted: "var(--color-text-muted, #6b7280)",
+  surface: "var(--color-teal-light, #e8f0ed)",
+  border: "var(--color-teal, #4a8b7c)",
   transparent: true,
 };
 
 const diagrams: Record<string, string> = {
   "actor-hierarchy": `
 graph TD
-    Agent["Agent"]
+    Agent(["<b>Agent</b>"])
     AIAgent["AIAgent"]
     HumanUser["HumanUser"]
     SubAgent["SubAgent"]
-    Persona["Persona"]
-    AgentRole["AgentRole"]
-    Organization["Organization"]
+    Persona(("Persona"))
+    AgentRole(("AgentRole"))
+    Organization(("Organization"))
 
-    Agent --> AIAgent
-    Agent --> HumanUser
-    AIAgent --> SubAgent
-    AIAgent -.- Persona
-    Agent -.- AgentRole
-    Agent -.- Organization
+    Agent -->|subclass| AIAgent
+    Agent -->|subclass| HumanUser
+    AIAgent -->|subclass| SubAgent
+    AIAgent -.->|has| Persona
+    Agent -.->|plays| AgentRole
+    Agent -.->|belongs to| Organization
 `,
 
   "conversation-stack": `
 graph TD
-    Conversation["Conversation"] --> Session["Session"]
-    Session --> Turn["Turn"]
-    Turn --> Message["Message"]
-    Message --> ContentBlock["ContentBlock"]
-    Turn --> ToolInvocation["ToolInvocation"]
-    ToolInvocation --> ToolResult["ToolResult"]
-    Session -.- ContextWindow["ContextWindow"]
-    ContextWindow -.- CompactionEvent["CompactionEvent"]
+    Conversation(["Conversation"])
+    Session(["Session"])
+    Turn["Turn"]
+    Message["Message"]
+    ContentBlock["ContentBlock"]
+    ToolInvocation["ToolInvocation"]
+    ToolResult["ToolResult"]
+    ContextWindow{{"ContextWindow"}}
+    CompactionEvent{{"CompactionEvent"}}
+
+    Conversation -->|has| Session
+    Session -->|contains| Turn
+    Turn -->|has| Message
+    Message -->|has| ContentBlock
+    Turn -->|triggers| ToolInvocation
+    ToolInvocation -->|produces| ToolResult
+    Session -.->|bounded by| ContextWindow
+    ContextWindow -.->|triggers| CompactionEvent
 `,
 
   "memory-architecture": `
 graph TD
+    MemoryItem(["<b>MemoryItem</b>"])
+
     subgraph Tiers
-        Working["WorkingMemory"]
-        Episodic["EpisodicMemory"]
-        Semantic["SemanticMemory"]
-        Procedural["ProceduralMemory"]
+        Working[("WorkingMemory")]
+        Episodic[("EpisodicMemory")]
+        Procedural[("ProceduralMemory")]
+        Semantic[("SemanticMemory")]
     end
 
     subgraph Operations
-        Encoding["Encoding"]
-        Retrieval["Retrieval"]
-        Consolidation["Consolidation"]
-        Forgetting["Forgetting"]
+        Encoding{{"Encoding"}}
+        Retrieval{{"Retrieval"}}
+        Consolidation{{"Consolidation"}}
+        Forgetting{{"Forgetting"}}
     end
 
-    MemoryItem["MemoryItem"] --> Working
+    MemoryItem --> Working
     MemoryItem --> Episodic
     MemoryItem --> Semantic
     MemoryItem --> Procedural
 
-    Working -.- Encoding
-    Encoding -.- Episodic
-    Episodic -.- Consolidation
-    Consolidation -.- Semantic
-    Semantic -.- Retrieval
-    Semantic -.- Forgetting
+    Working -.->|encode| Encoding
+    Encoding -.->|store| Episodic
+    Episodic -.->|extract| Consolidation
+    Consolidation -.->|generalize| Semantic
+    Semantic -.->|recall| Retrieval
+    Semantic -.->|expire| Forgetting
 
-    Episodic --> Episode["Episode"]
-    Semantic --> Claim["Claim"]
+    Episodic -->|instance| Episode["Episode"]
+    Semantic -->|instance| Claim["Claim"]
 `,
 
   "module-map": `
 graph TD
-    Core["Core: Identity & Actors<br/><small>8 classes</small>"]
-    Event["Actions, Events & Time<br/><small>10 classes</small>"]
-    Conv["Conversation & Interaction<br/><small>20 classes</small>"]
-    Mem["Memory<br/><small>18 classes</small>"]
-    Plan["Goals, Plans & Tasks<br/><small>8 classes</small>"]
-    Gov["Governance & Safety<br/><small>11 classes</small>"]
-    Svc["External Services<br/><small>10 classes</small>"]
-    Err["Error Recovery & Observability<br/><small>11 classes</small>"]
-    Model["Model Identity<br/><small>5 classes</small>"]
-    Sched["Scheduling & Automation<br/><small>10 classes</small>"]
+    Core(["<b>Core: Identity & Actors</b><br/>8 classes"])
+    Event(["Actions, Events & Time<br/>10 classes"])
+    Conv["Conversation & Interaction<br/>20 classes"]
+    Mem["Memory<br/>18 classes"]
+    Plan["Goals, Plans & Tasks<br/>8 classes"]
+    Gov["Governance & Safety<br/>11 classes"]
+    Svc["External Services<br/>10 classes"]
+    Err["Error Recovery<br/>11 classes"]
+    Model["Model Identity<br/>5 classes"]
+    Sched["Scheduling<br/>10 classes"]
 
-    Core --> Event
-    Core --> Conv
-    Core --> Mem
-    Core --> Plan
-    Core --> Gov
-    Core --> Svc
-    Core --> Model
+    Core ==> Event
+    Core ==> Conv
+    Core ==> Mem
+    Core ==> Plan
+    Core ==> Gov
+    Core ==> Svc
+    Core ==> Model
     Event --> Conv
     Event --> Mem
     Event --> Plan

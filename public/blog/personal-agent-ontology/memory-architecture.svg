@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 971.3503958333333 510.7" width="971.3503958333333" height="510.7" style="--bg:var(--color-bg, #1a1b26);--fg:var(--color-text, #a9b1d6);--accent:#7aa2f7;--muted:#565f89;--surface:#292e42;--border:#3d59a1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 922.7032499999999 617.9" width="922.7032499999999" height="617.9" style="--bg:var(--color-bg, #f8f7f4);--fg:var(--color-text, #3d4852);--accent:var(--color-teal, #4a8b7c);--muted:var(--color-text-muted, #6b7280);--surface:var(--color-teal-light, #e8f0ed);--border:var(--color-teal, #4a8b7c)">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap');
   text { font-family: 'Inter', system-ui, sans-serif; }
@@ -27,69 +27,117 @@
   </marker>
 </defs>
 <g class="subgraph" data-id="Tiers" data-label="Tiers">
-  <rect x="102.7974375" y="130.9" width="699.501" height="156.9" rx="0" ry="0" fill="var(--_group-fill)" stroke="var(--_node-stroke)" stroke-width="1" />
-  <rect x="102.7974375" y="130.9" width="699.501" height="28" rx="0" ry="0" fill="var(--_group-hdr)" stroke="var(--_node-stroke)" stroke-width="1" />
-  <text x="114.7974375" y="144.9" font-size="12" font-weight="600" fill="var(--_text-sec)" dy="4.199999999999999">Tiers</text>
+  <rect x="113.40324999999999" y="130.9" width="699.501" height="110.9" rx="0" ry="0" fill="var(--_group-fill)" stroke="var(--_node-stroke)" stroke-width="1" />
+  <rect x="113.40324999999999" y="130.9" width="699.501" height="28" rx="0" ry="0" fill="var(--_group-hdr)" stroke="var(--_node-stroke)" stroke-width="1" />
+  <text x="125.40324999999999" y="144.9" font-size="12" font-weight="600" fill="var(--_text-sec)" dy="4.199999999999999">Tiers</text>
 </g>
 <g class="subgraph" data-id="Operations" data-label="Operations">
-  <rect x="295.3829375" y="347.8" width="534.258" height="96.9" rx="0" ry="0" fill="var(--_group-fill)" stroke="var(--_node-stroke)" stroke-width="1" />
-  <rect x="295.3829375" y="347.8" width="534.258" height="28" rx="0" ry="0" fill="var(--_group-hdr)" stroke="var(--_node-stroke)" stroke-width="1" />
-  <text x="307.3829375" y="361.8" font-size="12" font-weight="600" fill="var(--_text-sec)" dy="4.199999999999999">Operations</text>
+  <rect x="139.45945833333337" y="455" width="614.258" height="96.9" rx="0" ry="0" fill="var(--_group-fill)" stroke="var(--_node-stroke)" stroke-width="1" />
+  <rect x="139.45945833333337" y="455" width="614.258" height="28" rx="0" ry="0" fill="var(--_group-hdr)" stroke="var(--_node-stroke)" stroke-width="1" />
+  <text x="151.45945833333337" y="469" font-size="12" font-weight="600" fill="var(--_text-sec)" dy="4.199999999999999">Operations</text>
 </g>
-<polyline class="edge" data-from="MemoryItem" data-to="Working" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="439.66610416666674,76.9 439.66610416666674,125.9 188.6784375,125.9 188.6784375,174.9" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
-<polyline class="edge" data-from="MemoryItem" data-to="Episodic" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="439.66610416666674,76.9 439.66610416666674,125.9 357.55193750000007,125.9 357.55193750000007,174.9" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
-<polyline class="edge" data-from="MemoryItem" data-to="Semantic" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="439.66610416666674,76.9 439.66610416666674,125.9 714.5649375000002,125.9 714.5649375000002,174.9" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
-<polyline class="edge" data-from="MemoryItem" data-to="Procedural" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="439.66610416666674,76.9 439.66610416666674,125.9 535.6879375,125.9 535.6879375,174.9" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
-<polyline class="edge" data-from="Working" data-to="Encoding" data-style="dotted" data-arrow-start="false" data-arrow-end="false" points="188.6784375,211.8 188.6784375,247.8 438.68831250000005,247.8 438.6883125000002,329.8 360.5159375000002,329.8 360.51593749999995,402.8" fill="none" stroke="var(--_line)" stroke-width="1" stroke-dasharray="4 4" />
-<polyline class="edge" data-from="Encoding" data-to="Episodic" data-style="dotted" data-arrow-start="false" data-arrow-end="false" points="360.5159375,439.70000000000005 360.5159375,462.7 40.039999999999964,462.7 40.039999999999964,112.90000000000003 333.88777083333343,112.90000000000003 333.88777083333343,174.9" fill="none" stroke="var(--_line)" stroke-width="1" stroke-dasharray="4 4" />
-<polyline class="edge" data-from="Episodic" data-to="Consolidation" data-style="dotted" data-arrow-start="false" data-arrow-end="false" points="381.2161041666667,211.8 381.2161041666667,223.8 557.8905208333333,223.8 557.8905208333335,317.8 752.6519375000003,317.8 752.6519375,402.8" fill="none" stroke="var(--_line)" stroke-width="1" stroke-dasharray="4 4" />
-<polyline class="edge" data-from="Consolidation" data-to="Semantic" data-style="dotted" data-arrow-start="false" data-arrow-end="false" points="752.6519375,439.70000000000005 752.6519375,462.7 923.3503958333333,462.7 923.3503958333333,112.90000000000003 738.4761041666667,112.90000000000003 738.4761041666668,174.9" fill="none" stroke="var(--_line)" stroke-width="1" stroke-dasharray="4 4" />
-<polyline class="edge" data-from="Semantic" data-to="Retrieval" data-style="dotted" data-arrow-start="false" data-arrow-end="false" points="714.5649375,211.8 714.5649375,247.8 537.8905208333333,247.8 537.8905208333335,329.8 485.2999375000002,329.8 485.29993749999994,402.8" fill="none" stroke="var(--_line)" stroke-width="1" stroke-dasharray="4 4" />
-<polyline class="edge" data-from="Semantic" data-to="Forgetting" data-style="dotted" data-arrow-start="false" data-arrow-end="false" points="750.4316875000002,211.8 750.4316875000002,259.8 547.8905208333333,259.8 547.8905208333335,329.8 612.3069375000002,329.8 612.3069375,402.8" fill="none" stroke="var(--_line)" stroke-width="1" stroke-dasharray="4 4" />
-<polyline class="edge" data-from="Episodic" data-to="Episode" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="333.8877708333334,211.8 333.8877708333334,223.8 251.28310416666665,223.8 251.28310416666676,305.8 120.88293750000008,305.8 120.88293750000008,402.8" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
-<polyline class="edge" data-from="Semantic" data-to="Claim" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="678.6981875000001,211.8 678.6981875000001,235.8 428.6883125,235.8 428.68831250000017,317.8 230.84693750000014,317.8 230.84693750000014,402.8" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
-<g class="node" data-id="MemoryItem" data-label="MemoryItem" data-shape="rectangle">
-  <rect x="383.4936041666667" y="40" width="112.345" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
-  <text x="439.66610416666674" y="58.45" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">MemoryItem</text>
+<polyline class="edge" data-from="MemoryItem" data-to="Working" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="476.03558333333336,76.9 476.03558333333336,125.9 727.02325,125.9 727.02325,174.9" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="MemoryItem" data-to="Episodic" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="476.03558333333336,76.9 476.03558333333336,125.9 558.14975,125.9 558.14975,174.9" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="MemoryItem" data-to="Semantic" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="476.03558333333336,76.9 476.03558333333336,125.9 201.13675,125.9 201.13675,174.9" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="MemoryItem" data-to="Procedural" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="476.03558333333336,76.9 476.03558333333336,125.9 380.01374999999996,125.9 380.01374999999996,174.9" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Working" data-to="Encoding" data-style="dotted" data-arrow-start="false" data-arrow-end="true" data-label="encode" points="727.02325,225.8 727.02325,368.7 732.39725,368.7 732.39725,437 678.5844583333334,437 678.5844583333334,499" fill="none" stroke="var(--_line)" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Encoding" data-to="Episodic" data-style="dotted" data-arrow-start="false" data-arrow-end="true" data-label="store" points="678.5844583333334,535.9 678.5844583333334,569.9 822.9042499999999,569.9 822.9042499999999,112.89999999999998 581.8139166666667,112.89999999999998 581.8139166666667,174.89999999999998" fill="none" stroke="var(--_line)" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Episodic" data-to="Consolidation" data-style="dotted" data-arrow-start="false" data-arrow-end="true" data-label="extract" points="534.4855833333334,225.8 534.4855833333334,437 520.4624583333333,437 520.4624583333334,499" fill="none" stroke="var(--_line)" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Consolidation" data-to="Semantic" data-style="dotted" data-arrow-start="false" data-arrow-end="true" data-label="generalize" points="520.4624583333334,535.9 520.4624583333334,569.9 70.5,569.9 70.5,112.89999999999998 177.22558333333336,112.89999999999998 177.2255833333333,174.89999999999998" fill="none" stroke="var(--_line)" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Semantic" data-to="Retrieval" data-style="dotted" data-arrow-start="false" data-arrow-end="true" data-label="recall" points="237.0035,225.8 237.0035,340.1 351.08799999999997,340.1 351.08799999999997,437 363.8224583333334,437 363.82245833333343,499" fill="none" stroke="var(--_line)" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Semantic" data-to="Forgetting" data-style="dotted" data-arrow-start="false" data-arrow-end="true" data-label="expire" points="201.13675,225.8 201.13674999999998,352.1 250.306,352.1 250.306,437 216.81545833333337,437 216.8154583333334,499" fill="none" stroke="var(--_line)" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Episodic" data-to="Episode" data-style="solid" data-arrow-start="false" data-arrow-end="true" data-label="instance" points="581.8139166666667,225.8 581.8139166666667,283.8 629.3275833333335,283.8 629.3275833333333,364.1" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Semantic" data-to="Claim" data-style="solid" data-arrow-start="false" data-arrow-end="true" data-label="instance" points="165.26999999999998,225.8 165.27,364.1" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<g class="edge-label" data-from="Working" data-to="Encoding" data-label="encode">
+  <rect x="705.39725" y="375.7" width="53.29" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="732.04225" y="390.84999999999997" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">encode</text>
+</g>
+<g class="edge-label" data-from="Encoding" data-to="Episodic" data-label="store">
+  <rect x="801.4042499999999" y="532.5999999999999" width="42.598" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="822.7032499999999" y="547.7499999999999" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">store</text>
+</g>
+<g class="edge-label" data-from="Episodic" data-to="Consolidation" data-label="extract">
+  <rect x="508.98558333333335" y="375.7" width="50.91400000000001" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="534.4425833333333" y="390.84999999999997" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">extract</text>
+</g>
+<g class="edge-label" data-from="Consolidation" data-to="Semantic" data-label="generalize">
+  <rect x="36" y="532.5999999999999" width="68.73400000000001" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="70.367" y="547.7499999999999" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">generalize</text>
+</g>
+<g class="edge-label" data-from="Semantic" data-to="Retrieval" data-label="recall">
+  <rect x="328.58799999999997" y="375.7" width="44.974000000000004" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="351.075" y="390.84999999999997" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">recall</text>
+</g>
+<g class="edge-label" data-from="Semantic" data-to="Forgetting" data-label="expire">
+  <rect x="225.806" y="375.7" width="48.538000000000004" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="250.07500000000002" y="390.84999999999997" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">expire</text>
+</g>
+<g class="edge-label" data-from="Episodic" data-to="Episode" data-label="instance">
+  <rect x="599.8275833333335" y="290.8" width="58.042" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="628.8485833333334" y="305.95" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">instance</text>
+</g>
+<g class="edge-label" data-from="Semantic" data-to="Claim" data-label="instance">
+  <rect x="135.76999999999998" y="290.8" width="58.042" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="164.791" y="305.95" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">instance</text>
+</g>
+<g class="node" data-id="MemoryItem" data-label="&lt;b&gt;MemoryItem&lt;/b&gt;" data-shape="stadium">
+  <rect x="419.86308333333335" y="40" width="112.345" height="36.900000000000006" rx="18.450000000000003" ry="18.450000000000003" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="476.03558333333336" y="58.45" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55"><tspan font-weight="bold">MemoryItem</tspan></text>
 </g>
 <g class="node" data-id="Episode" data-label="Episode" data-shape="rectangle">
-  <rect x="75.45493749999991" y="402.8" width="90.856" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
-  <text x="120.88293749999991" y="421.25" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Episode</text>
+  <rect x="583.8995833333333" y="364.1" width="90.856" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="629.3275833333333" y="382.55" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Episode</text>
 </g>
 <g class="node" data-id="Claim" data-label="Claim" data-shape="rectangle">
-  <rect x="194.3109374999999" y="402.8" width="73.072" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
-  <text x="230.8469374999999" y="421.25" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Claim</text>
+  <rect x="128.734" y="364.1" width="73.072" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="165.27" y="382.55" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Claim</text>
 </g>
-<g class="node" data-id="Working" data-label="WorkingMemory" data-shape="rectangle">
-  <rect x="118.7974375" y="174.9" width="139.762" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
-  <text x="188.6784375" y="193.35000000000002" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">WorkingMemory</text>
+<g class="node" data-id="Working" data-label="WorkingMemory" data-shape="cylinder">
+  <rect x="657.14225" y="181.9" width="139.762" height="36.900000000000006" fill="var(--_node-fill)" stroke="none" />
+  <line x1="657.14225" y1="181.9" x2="657.14225" y2="218.8" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <line x1="796.90425" y1="181.9" x2="796.90425" y2="218.8" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <ellipse cx="727.02325" cy="218.8" rx="69.881" ry="7" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <ellipse cx="727.02325" cy="181.9" rx="69.881" ry="7" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="727.02325" y="200.35000000000002" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">WorkingMemory</text>
 </g>
-<g class="node" data-id="Episodic" data-label="EpisodicMemory" data-shape="rectangle">
-  <rect x="286.55943750000006" y="174.9" width="141.985" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
-  <text x="357.55193750000007" y="193.35000000000002" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">EpisodicMemory</text>
+<g class="node" data-id="Episodic" data-label="EpisodicMemory" data-shape="cylinder">
+  <rect x="487.15725" y="181.9" width="141.985" height="36.900000000000006" fill="var(--_node-fill)" stroke="none" />
+  <line x1="487.15725" y1="181.9" x2="487.15725" y2="218.8" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <line x1="629.14225" y1="181.9" x2="629.14225" y2="218.8" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <ellipse cx="558.14975" cy="218.8" rx="70.9925" ry="7" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <ellipse cx="558.14975" cy="181.9" rx="70.9925" ry="7" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="558.14975" y="200.35000000000002" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">EpisodicMemory</text>
 </g>
-<g class="node" data-id="Semantic" data-label="SemanticMemory" data-shape="rectangle">
-  <rect x="642.8314375000001" y="174.9" width="143.467" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
-  <text x="714.5649375000002" y="193.35000000000002" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">SemanticMemory</text>
+<g class="node" data-id="Procedural" data-label="ProceduralMemory" data-shape="cylinder">
+  <rect x="300.87024999999994" y="181.9" width="158.287" height="36.900000000000006" fill="var(--_node-fill)" stroke="none" />
+  <line x1="300.87024999999994" y1="181.9" x2="300.87024999999994" y2="218.8" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <line x1="459.15725" y1="181.9" x2="459.15725" y2="218.8" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <ellipse cx="380.01374999999996" cy="218.8" rx="79.1435" ry="7" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <ellipse cx="380.01374999999996" cy="181.9" rx="79.1435" ry="7" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="380.01374999999996" y="200.35000000000002" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">ProceduralMemory</text>
 </g>
-<g class="node" data-id="Procedural" data-label="ProceduralMemory" data-shape="rectangle">
-  <rect x="456.5444375" y="174.9" width="158.287" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
-  <text x="535.6879375" y="193.35000000000002" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">ProceduralMemory</text>
+<g class="node" data-id="Semantic" data-label="SemanticMemory" data-shape="cylinder">
+  <rect x="129.40324999999999" y="181.9" width="143.467" height="36.900000000000006" fill="var(--_node-fill)" stroke="none" />
+  <line x1="129.40324999999999" y1="181.9" x2="129.40324999999999" y2="218.8" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <line x1="272.87025" y1="181.9" x2="272.87025" y2="218.8" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <ellipse cx="201.13675" cy="218.8" rx="71.7335" ry="7" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <ellipse cx="201.13675" cy="181.9" rx="71.7335" ry="7" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="201.13675" y="200.35000000000002" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">SemanticMemory</text>
 </g>
-<g class="node" data-id="Encoding" data-label="Encoding" data-shape="rectangle">
-  <rect x="311.3829375" y="402.8" width="98.266" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
-  <text x="360.5159375" y="421.25" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Encoding</text>
+<g class="node" data-id="Encoding" data-label="Encoding" data-shape="hexagon">
+  <polygon points="628.6764583333334,499 728.4924583333333,499 737.7174583333333,517.45 728.4924583333333,535.9 628.6764583333334,535.9 619.4514583333333,517.45" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="678.5844583333334" y="517.45" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Encoding</text>
 </g>
-<g class="node" data-id="Retrieval" data-label="Retrieval" data-shape="rectangle">
-  <rect x="437.64893750000005" y="402.8" width="95.30199999999999" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
-  <text x="485.29993750000006" y="421.25" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Retrieval</text>
+<g class="node" data-id="Retrieval" data-label="Retrieval" data-shape="hexagon">
+  <polygon points="315.3964583333334,499 412.24845833333336,499 421.4734583333334,517.45 412.24845833333336,535.9 315.3964583333334,535.9 306.17145833333336,517.45" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="363.8224583333334" y="517.45" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Retrieval</text>
 </g>
-<g class="node" data-id="Consolidation" data-label="Consolidation" data-shape="rectangle">
-  <rect x="691.6629375" y="402.8" width="121.978" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
-  <text x="752.6519375" y="421.25" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Consolidation</text>
+<g class="node" data-id="Consolidation" data-label="Consolidation" data-shape="hexagon">
+  <polygon points="458.6984583333334,499 582.2264583333334,499 591.4514583333334,517.45 582.2264583333334,535.9 458.6984583333334,535.9 449.4734583333334,517.45" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="520.4624583333334" y="517.45" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Consolidation</text>
 </g>
-<g class="node" data-id="Forgetting" data-label="Forgetting" data-shape="rectangle">
-  <rect x="560.9509375" y="402.8" width="102.712" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
-  <text x="612.3069375" y="421.25" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Forgetting</text>
+<g class="node" data-id="Forgetting" data-label="Forgetting" data-shape="hexagon">
+  <polygon points="164.68445833333337,499 268.94645833333334,499 278.17145833333336,517.45 268.94645833333334,535.9 164.68445833333337,535.9 155.45945833333337,517.45" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="216.81545833333337" y="517.45" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Forgetting</text>
 </g>
 </svg>

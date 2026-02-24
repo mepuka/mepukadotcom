@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1297.0306666666665 439.20000000000005" width="1297.0306666666665" height="439.20000000000005" style="--bg:var(--color-bg, #1a1b26);--fg:var(--color-text, #a9b1d6);--accent:#7aa2f7;--muted:#565f89;--surface:#292e42;--border:#3d59a1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1206.6286666666667 439.20000000000005" width="1206.6286666666667" height="439.20000000000005" style="--bg:var(--color-bg, #f8f7f4);--fg:var(--color-text, #3d4852);--accent:var(--color-teal, #4a8b7c);--muted:var(--color-text-muted, #6b7280);--surface:var(--color-teal-light, #e8f0ed);--border:var(--color-teal, #4a8b7c)">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap');
   text { font-family: 'Inter', system-ui, sans-serif; }
@@ -26,68 +26,68 @@
     <polygon points="8 0, 0 2.5, 8 5" fill="var(--_arrow)" stroke="var(--_arrow)" stroke-width="0.75" stroke-linejoin="round" />
   </marker>
 </defs>
-<polyline class="edge" data-from="Core" data-to="Event" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="753.4546666666665,93.80000000000001 753.4546666666665,111.80000000000001 570.0047499999998,111.80000000000001 570.0047499999998,129.8" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
-<polyline class="edge" data-from="Core" data-to="Conv" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="753.4546666666665,93.80000000000001 753.4546666666665,111.80000000000001 138.03899999999987,111.80000000000001 138.03899999999987,231.60000000000002" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
-<polyline class="edge" data-from="Core" data-to="Mem" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="753.4546666666665,93.80000000000001 753.4546666666665,111.80000000000001 315.06349999999986,111.80000000000001 315.06349999999986,231.60000000000002" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
-<polyline class="edge" data-from="Core" data-to="Plan" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="753.4546666666665,93.80000000000001 753.4546666666665,111.80000000000001 725.8384999999998,111.80000000000001 725.8384999999998,231.60000000000002" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
-<polyline class="edge" data-from="Core" data-to="Gov" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="753.4546666666665,93.80000000000001 753.4546666666665,111.80000000000001 919.1649999999997,111.80000000000001 919.1649999999997,231.60000000000002" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
-<polyline class="edge" data-from="Core" data-to="Svc" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="753.4546666666665,93.80000000000001 753.4546666666665,111.80000000000001 1032.3551666666665,111.80000000000001 1032.3551666666665,129.8" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
-<polyline class="edge" data-from="Core" data-to="Model" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="753.4546666666665,93.80000000000001 753.4546666666665,111.80000000000001 1196.0416666666665,111.80000000000001 1196.0416666666665,129.8" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
-<polyline class="edge" data-from="Event" data-to="Conv" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="570.0047499999998,183.60000000000002 570.0047499999998,207.60000000000002 138.03899999999987,207.60000000000002 138.03899999999987,231.60000000000002" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
-<polyline class="edge" data-from="Event" data-to="Mem" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="570.0047499999998,183.60000000000002 570.0047499999998,207.60000000000002 315.06349999999986,207.60000000000002 315.06349999999986,231.60000000000002" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
-<polyline class="edge" data-from="Event" data-to="Plan" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="570.0047499999998,183.60000000000002 570.0047499999998,207.60000000000002 725.8384999999998,207.60000000000002 725.8384999999998,231.60000000000002" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
-<polyline class="edge" data-from="Event" data-to="Gov" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="570.0047499999998,183.60000000000002 570.0047499999998,207.60000000000002 919.1649999999997,207.60000000000002 919.1649999999997,231.60000000000002" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
-<polyline class="edge" data-from="Event" data-to="Err" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="570.0047499999998,183.60000000000002 570.0047499999998,207.60000000000002 508.0194999999998,207.60000000000002 508.0194999999998,231.60000000000002" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
-<polyline class="edge" data-from="Event" data-to="Sched" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="570.0047499999998,183.60000000000002 570.0047499999998,207.60000000000002 678.9142499999998,207.60000000000002 678.9142499999998,345.40000000000003" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
-<polyline class="edge" data-from="Plan" data-to="Sched" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="725.8384999999998,285.40000000000003 725.8384999999998,333.40000000000003 709.6179166666665,333.40000000000003 709.6179166666665,345.40000000000003" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
-<g class="node" data-id="Core" data-label="Core: Identity &amp; Actors
-8 classes" data-shape="rectangle">
-  <rect x="668.3831666666665" y="40" width="170.143" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
-  <text x="753.4546666666665" y="66.9" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="753.4546666666665" dy="-3.9000000000000012">Core: Identity &amp; Actors</tspan><tspan x="753.4546666666665" dy="16.900000000000002">8 classes</tspan></text>
+<polyline class="edge" data-from="Core" data-to="Event" data-style="thick" data-arrow-start="false" data-arrow-end="true" points="663.0526666666667,93.80000000000001 663.0526666666667,111.80000000000001 502.2032499999999,111.80000000000001 502.2032499999999,129.8" fill="none" stroke="var(--_line)" stroke-width="2" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Core" data-to="Conv" data-style="thick" data-arrow-start="false" data-arrow-end="true" points="663.0526666666667,93.80000000000001 663.0526666666667,111.80000000000001 138.039,111.80000000000001 138.039,231.60000000000002" fill="none" stroke="var(--_line)" stroke-width="2" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Core" data-to="Mem" data-style="thick" data-arrow-start="false" data-arrow-end="true" points="663.0526666666667,93.80000000000001 663.0526666666667,111.80000000000001 315.0635,111.80000000000001 315.0635,231.60000000000002" fill="none" stroke="var(--_line)" stroke-width="2" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Core" data-to="Plan" data-style="thick" data-arrow-start="false" data-arrow-end="true" points="663.0526666666667,93.80000000000001 663.0526666666667,111.80000000000001 635.4365,111.80000000000001 635.4365,231.60000000000002" fill="none" stroke="var(--_line)" stroke-width="2" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Core" data-to="Gov" data-style="thick" data-arrow-start="false" data-arrow-end="true" points="663.0526666666667,93.80000000000001 663.0526666666667,111.80000000000001 828.7629999999999,111.80000000000001 828.7629999999999,231.60000000000002" fill="none" stroke="var(--_line)" stroke-width="2" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Core" data-to="Svc" data-style="thick" data-arrow-start="false" data-arrow-end="true" points="663.0526666666667,93.80000000000001 663.0526666666667,111.80000000000001 941.9531666666667,111.80000000000001 941.9531666666667,129.8" fill="none" stroke="var(--_line)" stroke-width="2" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Core" data-to="Model" data-style="thick" data-arrow-start="false" data-arrow-end="true" points="663.0526666666667,93.80000000000001 663.0526666666667,111.80000000000001 1105.6396666666667,111.80000000000001 1105.6396666666667,129.8" fill="none" stroke="var(--_line)" stroke-width="2" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Event" data-to="Conv" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="502.2032499999999,183.60000000000002 502.2032499999999,207.60000000000002 138.039,207.60000000000002 138.039,231.60000000000002" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Event" data-to="Mem" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="502.2032499999999,183.60000000000002 502.2032499999999,207.60000000000002 315.0635,207.60000000000002 315.0635,231.60000000000002" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Event" data-to="Plan" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="502.2032499999999,183.60000000000002 502.2032499999999,207.60000000000002 635.4365,207.60000000000002 635.4365,231.60000000000002" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Event" data-to="Gov" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="502.2032499999999,183.60000000000002 502.2032499999999,207.60000000000002 828.7629999999999,207.60000000000002 828.7629999999999,231.60000000000002" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Event" data-to="Err" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="502.2032499999999,183.60000000000002 502.2032499999999,207.60000000000002 462.8185,207.60000000000002 462.8185,231.60000000000002" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Event" data-to="Sched" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="502.2032499999999,183.60000000000002 502.2032499999999,207.60000000000002 588.51225,207.60000000000002 588.51225,345.40000000000003" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Plan" data-to="Sched" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="635.4365,285.40000000000003 635.4365,333.40000000000003 606.6189166666666,333.40000000000003 606.6189166666666,345.40000000000003" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<g class="node" data-id="Core" data-label="&lt;b&gt;Core: Identity &amp; Actors&lt;/b&gt;
+8 classes" data-shape="stadium">
+  <rect x="577.9811666666667" y="40" width="170.143" height="53.800000000000004" rx="26.900000000000002" ry="26.900000000000002" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="663.0526666666667" y="66.9" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="663.0526666666667" dy="-3.9000000000000012"><tspan font-weight="bold">Core: Identity &amp; Actors</tspan></tspan><tspan x="663.0526666666667" dy="16.900000000000002">8 classes</tspan></text>
 </g>
 <g class="node" data-id="Event" data-label="Actions, Events &amp; Time
-10 classes" data-shape="rectangle">
-  <rect x="483.45124999999985" y="129.8" width="173.107" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
-  <text x="570.0047499999998" y="156.70000000000002" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="570.0047499999998" dy="-3.9000000000000012">Actions, Events &amp; Time</tspan><tspan x="570.0047499999998" dy="16.900000000000002">10 classes</tspan></text>
+10 classes" data-shape="stadium">
+  <rect x="415.6497499999999" y="129.8" width="173.107" height="53.800000000000004" rx="26.900000000000002" ry="26.900000000000002" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="502.2032499999999" y="156.70000000000002" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="502.2032499999999" dy="-3.9000000000000012">Actions, Events &amp; Time</tspan><tspan x="502.2032499999999" dy="16.900000000000002">10 classes</tspan></text>
 </g>
 <g class="node" data-id="Conv" data-label="Conversation &amp; Interaction
 20 classes" data-shape="rectangle">
-  <rect x="39.999999999999886" y="231.60000000000002" width="196.078" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
-  <text x="138.03899999999987" y="258.5" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="138.03899999999987" dy="-3.9000000000000012">Conversation &amp; Interaction</tspan><tspan x="138.03899999999987" dy="16.900000000000002">20 classes</tspan></text>
+  <rect x="40" y="231.60000000000002" width="196.078" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="138.039" y="258.5" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="138.039" dy="-3.9000000000000012">Conversation &amp; Interaction</tspan><tspan x="138.039" dy="16.900000000000002">20 classes</tspan></text>
 </g>
 <g class="node" data-id="Mem" data-label="Memory
 18 classes" data-shape="rectangle">
-  <rect x="264.07799999999986" y="231.60000000000002" width="101.971" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
-  <text x="315.06349999999986" y="258.5" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="315.06349999999986" dy="-3.9000000000000012">Memory</tspan><tspan x="315.06349999999986" dy="16.900000000000002">18 classes</tspan></text>
+  <rect x="264.078" y="231.60000000000002" width="101.971" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="315.0635" y="258.5" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="315.0635" dy="-3.9000000000000012">Memory</tspan><tspan x="315.0635" dy="16.900000000000002">18 classes</tspan></text>
 </g>
 <g class="node" data-id="Plan" data-label="Goals, Plans &amp; Tasks
 8 classes" data-shape="rectangle">
-  <rect x="642.9899999999998" y="231.60000000000002" width="165.697" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
-  <text x="725.8384999999998" y="258.5" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="725.8384999999998" dy="-3.9000000000000012">Goals, Plans &amp; Tasks</tspan><tspan x="725.8384999999998" dy="16.900000000000002">8 classes</tspan></text>
+  <rect x="552.588" y="231.60000000000002" width="165.697" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="635.4365" y="258.5" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="635.4365" dy="-3.9000000000000012">Goals, Plans &amp; Tasks</tspan><tspan x="635.4365" dy="16.900000000000002">8 classes</tspan></text>
 </g>
 <g class="node" data-id="Gov" data-label="Governance &amp; Safety
 11 classes" data-shape="rectangle">
-  <rect x="836.6869999999998" y="231.60000000000002" width="164.95600000000002" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
-  <text x="919.1649999999997" y="258.5" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="919.1649999999997" dy="-3.9000000000000012">Governance &amp; Safety</tspan><tspan x="919.1649999999997" dy="16.900000000000002">11 classes</tspan></text>
+  <rect x="746.285" y="231.60000000000002" width="164.95600000000002" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="828.7629999999999" y="258.5" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="828.7629999999999" dy="-3.9000000000000012">Governance &amp; Safety</tspan><tspan x="828.7629999999999" dy="16.900000000000002">11 classes</tspan></text>
 </g>
 <g class="node" data-id="Svc" data-label="External Services
 10 classes" data-shape="rectangle">
-  <rect x="957.6576666666665" y="129.8" width="149.395" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
-  <text x="1032.3551666666665" y="156.70000000000002" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="1032.3551666666665" dy="-3.9000000000000012">External Services</tspan><tspan x="1032.3551666666665" dy="16.900000000000002">10 classes</tspan></text>
+  <rect x="867.2556666666667" y="129.8" width="149.395" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="941.9531666666667" y="156.70000000000002" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="941.9531666666667" dy="-3.9000000000000012">External Services</tspan><tspan x="941.9531666666667" dy="16.900000000000002">10 classes</tspan></text>
 </g>
-<g class="node" data-id="Err" data-label="Error Recovery &amp; Observability
+<g class="node" data-id="Err" data-label="Error Recovery
 11 classes" data-shape="rectangle">
-  <rect x="394.04899999999986" y="231.60000000000002" width="227.94099999999995" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
-  <text x="508.0194999999998" y="258.5" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="508.0194999999998" dy="-3.9000000000000012">Error Recovery &amp; Observability</tspan><tspan x="508.0194999999998" dy="16.900000000000002">11 classes</tspan></text>
+  <rect x="394.049" y="231.60000000000002" width="137.539" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="462.8185" y="258.5" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="462.8185" dy="-3.9000000000000012">Error Recovery</tspan><tspan x="462.8185" dy="16.900000000000002">11 classes</tspan></text>
 </g>
 <g class="node" data-id="Model" data-label="Model Identity
 5 classes" data-shape="rectangle">
-  <rect x="1135.0526666666665" y="129.8" width="121.97800000000001" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
-  <text x="1196.0416666666665" y="156.70000000000002" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="1196.0416666666665" dy="-3.9000000000000012">Model Identity</tspan><tspan x="1196.0416666666665" dy="16.900000000000002">5 classes</tspan></text>
+  <rect x="1044.6506666666667" y="129.8" width="121.97800000000001" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="1105.6396666666667" y="156.70000000000002" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="1105.6396666666667" dy="-3.9000000000000012">Model Identity</tspan><tspan x="1105.6396666666667" dy="16.900000000000002">5 classes</tspan></text>
 </g>
-<g class="node" data-id="Sched" data-label="Scheduling &amp; Automation
+<g class="node" data-id="Sched" data-label="Scheduling
 10 classes" data-shape="rectangle">
-  <rect x="586.8032499999998" y="345.40000000000003" width="184.22199999999995" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
-  <text x="678.9142499999998" y="372.3" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="678.9142499999998" dy="-3.9000000000000012">Scheduling &amp; Automation</tspan><tspan x="678.9142499999998" dy="16.900000000000002">10 classes</tspan></text>
+  <rect x="534.19225" y="345.40000000000003" width="108.64" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="588.51225" y="372.3" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="588.51225" dy="-3.9000000000000012">Scheduling</tspan><tspan x="588.51225" dy="16.900000000000002">10 classes</tspan></text>
 </g>
 </svg>
