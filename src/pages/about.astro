@@ -6,7 +6,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <h1>About</h1>
 
   <div class="content">
-    <p>
+    <p class="lead">
       I'm <strong>Mepuka Kessy</strong>, a software engineer based in Chicago and Seattle.
     </p>
 
@@ -27,14 +27,27 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <style>
   h1 {
-    margin-bottom: var(--space-8);
+    margin-bottom: var(--space-6);
   }
 
   .content {
-    max-width: 600px;
+    max-width: 60ch;
   }
 
   .content p {
     margin-bottom: var(--space-6);
+  }
+
+  .lead {
+    font-size: var(--text-lg);
+    line-height: 1.65;
+    color: var(--color-ink);
+    border-left: 3px solid var(--color-terracotta);
+    padding-left: var(--space-4);
+  }
+
+  .lead strong {
+    font-family: var(--font-heading);
+    font-weight: 600;
   }
 </style>

@@ -9,8 +9,9 @@ const currentPath = Astro.url.pathname;
 ---
 
 <header>
+  <div class="accent-bar" aria-hidden="true"></div>
   <nav class="container">
-    <a href="/" class="logo">Mepuka</a>
+    <a href="/" class="logo">Mepuka<span class="logo-dot">.</span></a>
     <ul>
       {navItems.map((item) => (
         <li>
@@ -28,30 +29,44 @@ const currentPath = Astro.url.pathname;
 
 <style>
   header {
-    height: var(--header-height);
     border-bottom: 1px solid var(--color-border);
     position: sticky;
     top: 0;
-    background-color: var(--color-bg);
+    background-color: rgba(250, 245, 235, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     z-index: 100;
+  }
+
+  .accent-bar {
+    height: 3px;
+    background: var(--gradient-accent);
   }
 
   nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 100%;
+    height: var(--header-height);
   }
 
   .logo {
     font-family: var(--font-heading);
     font-size: var(--text-lg);
-    font-weight: 600;
-    color: var(--color-navy);
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+
+  .logo-dot {
+    color: var(--color-terracotta);
   }
 
   .logo::after {
     display: none;
+  }
+
+  .logo:hover .logo-dot {
+    color: var(--color-gold);
   }
 
   ul {
@@ -69,17 +84,20 @@ const currentPath = Astro.url.pathname;
     letter-spacing: 0.05em;
   }
 
-  li a:hover,
+  li a:hover {
+    color: var(--color-ink);
+  }
+
   li a.active {
-    color: var(--color-navy);
+    color: var(--color-terracotta);
   }
 
   li a::after {
     bottom: -4px;
+    height: 2px;
   }
 
   li a.active::after {
     width: 100%;
-    background-color: var(--color-teal);
   }
 </style>

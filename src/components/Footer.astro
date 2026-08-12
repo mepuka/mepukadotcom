@@ -4,14 +4,23 @@ const currentYear = new Date().getFullYear();
 
 <footer>
   <div class="container">
-    <p>&copy; {currentYear}</p>
+    <p>&copy; {currentYear} Mepuka</p>
+    <span class="dots" aria-hidden="true">
+      <i class="dot teal"></i><i class="dot gold"></i><i class="dot terracotta"></i>
+    </span>
   </div>
 </footer>
 
 <style>
   footer {
     border-top: 1px solid var(--color-border);
-    padding: var(--space-8) 0;
+    padding: var(--space-6) 0;
+  }
+
+  .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   p {
@@ -19,4 +28,19 @@ const currentYear = new Date().getFullYear();
     color: var(--color-text-muted);
     margin: 0;
   }
+
+  .dots {
+    display: inline-flex;
+    gap: 6px;
+  }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+  }
+
+  .dot.teal { background-color: var(--color-teal); }
+  .dot.gold { background-color: var(--color-gold); }
+  .dot.terracotta { background-color: var(--color-terracotta); }
 </style>

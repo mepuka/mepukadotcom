@@ -16,14 +16,14 @@ const formatDate = (date: Date) => {
 
 <BaseLayout title="Mepuka">
   <section class="intro">
-    <h1>Hello, I'm Mepuka</h1>
+    <h1>Hello, I'm <em>Mepuka</em></h1>
     <p class="tagline">
       Building things on the web. Writing about software, systems, and ideas.
     </p>
   </section>
 
   <section class="recent">
-    <h2>Recent Writing</h2>
+    <h2><span class="rule"></span>Recent Writing</h2>
     <ul class="post-list stagger">
       {posts.map((post) => (
         <li>
@@ -42,26 +42,45 @@ const formatDate = (date: Date) => {
 
 <style>
   .intro {
-    margin-bottom: var(--space-16);
+    margin-bottom: var(--space-12);
   }
 
   .intro h1 {
     margin-bottom: var(--space-3);
   }
 
+  .intro h1 em {
+    font-style: normal;
+    background: linear-gradient(180deg, transparent 68%, var(--color-gold-light) 68%);
+    padding: 0 0.08em;
+  }
+
   .tagline {
     font-size: var(--text-lg);
     color: var(--color-text-muted);
-    max-width: 500px;
+    max-width: 34ch;
+    line-height: 1.6;
   }
 
   .recent h2 {
-    font-size: var(--text-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--color-text-muted);
+    letter-spacing: 0.12em;
+    color: var(--color-terracotta);
     margin-top: 0;
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-4);
+  }
+
+  .rule {
+    width: 24px;
+    height: 2px;
+    background: var(--gradient-accent);
+    border-radius: 2px;
   }
 
   .post-list {
@@ -83,8 +102,11 @@ const formatDate = (date: Date) => {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    padding: var(--space-4) 0;
-    color: var(--color-navy);
+    padding: var(--space-3) var(--space-3);
+    margin: 0 calc(var(--space-3) * -1);
+    border-radius: 6px;
+    color: var(--color-ink);
+    transition: background-color 0.2s ease;
   }
 
   .post-list a::after {
@@ -92,7 +114,7 @@ const formatDate = (date: Date) => {
   }
 
   .post-list a:hover {
-    color: var(--color-teal-dark);
+    background-color: var(--color-surface);
   }
 
   .post-list a:hover .post-title {
@@ -102,6 +124,7 @@ const formatDate = (date: Date) => {
   .post-title {
     font-family: var(--font-heading);
     font-size: var(--text-lg);
+    font-weight: 600;
     transition: color 0.2s ease;
   }
 
