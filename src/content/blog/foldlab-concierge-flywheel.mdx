@@ -1,0 +1,171 @@
+---
+title: "foldlab: Teaching Machines to Refuse — Verifiable Computation for the Agent Era"
+description: "What I've been building: content-addressed event streams with proof-carrying folds, and a guided-construction loop where an LLM builds types that are valid by construction — measured live over MCP at 11 round-trips from intent to certified digest."
+date: 2026-08-13
+tags: [effect, foldlab, verification, mcp, typescript, go, llm]
+---
+
+## Two Histories, One State
+
+Run this from the [foldlab repo](https://github.com/mepuka/foldlab):
+
+```
+$ bun packages/core/examples/tour.ts
+
+two histories, same two facts, different order
+
+  A head           c0f9c11ccb06bc3c...
+  B head           cbf009894aea951a...
+  A state digest   62ca5ca464cbce85...
+  B state digest   62ca5ca464cbce85...
+  heads equal?     false
+  states equal?    true
+```
+
+Two event streams write the same two facts in opposite order. They
+end in the **same state** — and carry **different histories**. Both
+facts are computed continuously, as digests: a running hash chain
+(the way git hashes commits) names *exactly what happened*, and a
+canonical hash of the reduced state names *what it means now*.
+
+That gap is the whole project. The repo's phrasing: **the chain
+remembers what the fold forgives.** If you've ever needed to know
+whether two systems are "the same" — same config, same data, same
+deployment — you've hit the ambiguity this splits open. Same state is
+one question; same history is another. foldlab computes both, always,
+and makes each one a 32-byte comparison.
+
+## The Kit Is Five Structures You Already Use
+
+foldlab is a lab for verifiable computation over streams, built with
+Effect (TypeScript) and Go, twinned — every digest-producing operation
+is implemented in both languages and pinned by *walls*: differential
+tests asserting equal inputs produce equal digests, byte for byte.
+(That claim demos itself: the tour above was written and executed on
+Windows; it reproduces byte-identically on macOS.)
+
+Everything in it is built from five structures:
+
+1. **The append-only log** — events in order, never edited (a git
+   history, a Kafka topic).
+2. **The reducer** — fold the log, get state (`Array.reduce`, every
+   Redux store, `Stream.runFold`).
+3. **The hash chain** — fold the same log with SHA-256 instead: a
+   32-byte name for exactly this history.
+4. **The content-addressed store** — name things by the hash of what
+   they are (git objects, the Nix store). Immutable, so nothing ever
+   needs invalidating.
+5. **The version-checked register** — one compare-and-swap slot with
+   a fencing token: the *only* place writers coordinate. Its safety
+   is a machine-checked theorem (Apalache inductive invariant),
+   replayed in lockstep against the running Go implementation.
+
+None of these is novel — that's the point. They're the minimal
+answers to the five questions every distributed system asks: what
+happened, what does it mean, is it the same, have we seen this
+before, who decides. The bet is holding all five under one
+discipline: everything is canonical bytes, so everything has a
+digest, so everything can be cached, compared, federated, and
+replayed — across languages, machines, and strangers.
+
+## The Part I Care About Most: Machines That Refuse Well
+
+Here's where it gets interesting for the agent era.
+
+foldlab's daemon serves an [MCP](https://modelcontextprotocol.io)
+surface where an LLM builds types through *guided construction*: the
+agent opens a struct with **holes**, and the daemon answers every
+move with either a fact (what's still open, and every legal fill) or
+a **typed refusal** — a value carrying the violated law, the exact
+path, what arrived, what's legal, a worked example, and a
+ready-to-send repair. Nothing throws. There is no free-text error to
+parse.
+
+We measured this live last night, over a real stdio MCP session. The
+first mistake the model made is my favorite piece of evidence: asked
+for "a record type for orders," it wrote `"k": "record"` — because
+the human *said* "record." Natural language leaked into structure.
+The daemon's reply, verbatim:
+
+```json
+{ "ok": false, "refusal": {
+  "kind": "invalid-structure",
+  "law": "flb.type.v0: unknown kind refuses — the grammar grows
+          under ticket 004, never by admission on faith",
+  "path": ["partial","k"], "got": "record",
+  "expected": ["string","bool","int","float","null","opaque",
+               "literal","list","struct","union","brand","check",
+               "ref","hole"],
+  "example": { "k": "string" } } }
+```
+
+The model repaired it in **one round-trip**, from `expected` alone.
+Full session: **11 tool calls from first intent to a certified,
+content-addressed type** (a clean path is 7), at 1–6 ms per call.
+Resubmitting the identical structure returned the same digest with
+`created: false`; so did reordering the union members. Identity is
+content.
+
+The deep property: **validity never depends on the model.** The model
+proposes; the grammar disposes. A better model costs fewer
+round-trips — that's the *only* thing model quality changes. A
+hallucinating model, a vendor swap, a bad day: the certifier is the
+sole door, and nothing ill-formed gets a digest.
+
+## Why Collecting No's Is the Strategy
+
+There's a sixty-year-old theorem underneath this. Gold (1967) showed
+that a learner whose hypothesis is *too general* can never be
+corrected by positive examples — only counterexamples cut. And an
+LLM's prior is always too general: it arrives believing your grammar
+is every JSON-ish notation it has ever seen. Successes teach it
+nothing. **The refusals carry all the information.**
+
+So foldlab deliberately collects its no's. And its refusals are worth
+more than the literature's counterexamples because they're *typed*:
+carrying the violated law means one refusal refutes the entire class
+of values that break that law at that place. The refusal corpus is
+append-only evidence — journaled, content-addressed, merging across
+machines without coordination like any monotone data. Which yields
+the property I find genuinely strange and genuinely valuable: **the
+learning lives outside the model.** Swap the model tomorrow; the
+accumulated boundary knowledge — every law, every worked example,
+every certified type in the catalog — remains, recomputable by
+anyone.
+
+## Where Effect Fits
+
+Everything is written against [Effect](https://effect.website), and
+not for convenience. Effect is the most widely learned projection of
+the same discipline: make the computation a value. `Effect<A, E, R>`
+describes a computation with its failures and requirements in the
+type; `Layer` describes assembly; `Schema` describes shape; errors
+are data. foldlab takes the move one step further: **give the
+descriptions identity** — canonical bytes, then a digest — so a fold,
+a grammar, or a refusal isn't just composable, it's *addressable*.
+Effect made computations values; foldlab makes the values something
+two strangers can name, cache, compare, and verify.
+
+Even structured concurrency fits the pattern: a fiber tree computes
+the parent's outcome from its children's outcomes — a bottom-up fold.
+A Merkle tree is the same fold with hashing as the algebra. One
+shape, two projections, one shared law: no orphans.
+
+## Honest Ledger
+
+The repo keeps a claims ledger (`VERIFICATION.md`) with every
+verification claim, its proof level, and its bounds — and the
+discipline that every gate ships *negative controls*: sabotaged
+variants that must fail, because a prover that cannot fail proves
+nothing. Some things are theorems (the register's fencing safety, the
+fold laws, cross-language digest agreement on the frozen corpora).
+Some are measured (the session above; a transposition demo where
+content addressing collapsed a 10²³-node search tree to 1,681
+physical expansions, verified from the exported bundle). Some are
+designs with open issues filed against them by our own review lanes —
+the repo's issue tracker is the most adversarial reviewer it has.
+
+If any of this is interesting, start with the
+[README](https://github.com/mepuka/foldlab#readme) — the live watch
+section logs the review findings in real time, evidence attached —
+and run the tour. It's one command, and the digests will match mine.
